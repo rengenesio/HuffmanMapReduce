@@ -11,6 +11,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.util.ToolRunner;
 
+import br.ufrj.ppgi.huffmanmapreduce.mapreduce.encoder.EncoderConfiguration;
 import br.ufrj.ppgi.huffmanmapreduce.mapreduce.symbolcount.SymbolCountConfiguration;
 
 public class Encoder {
@@ -30,18 +31,18 @@ public class Encoder {
 		/* MAPREDUCE SYMBOL COUNT */
 		ToolRunner.run(new Configuration(), new SymbolCountConfiguration(), s);
 		/* END MAPREDUCE SYMBOL COUNT */
-		//FileToFrequency(file_in);
-		//frequencyToNodeArray();
-		//huffmanEncode();
-		//treeToCode();
-		//codificationToHDFS(file_cb);
+		FileToFrequency(file_in);
+		frequencyToNodeArray();
+		huffmanEncode();
+		treeToCode();
+		codificationToHDFS(file_cb);
 		/* MAPREDUCE SYMBOL ENCODER */
-		//ToolRunner.run(new Configuration(), new EncoderConfiguration(), s);
+		ToolRunner.run(new Configuration(), new EncoderConfiguration(), s);
 		/* END MAPREDUCE SYMBOL ENCODER */
 	}
 	
 	public void FileToFrequency(String arg0) throws IOException {
-		Path path = new Path(arg0 + ".dir/symbolcount/");
+		Path path = new Path(arg0 + ".mapreducedir/symbolcount/");
 		FileSystem fs = FileSystem.get(new Configuration());
 		FileStatus[] status = fs.listStatus(path);
 		
