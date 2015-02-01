@@ -18,7 +18,12 @@ public class Main {
 		out += ".dir/compressed";
 		cb += ".dir/codification";
 
-		fs.delete(new Path(args[0] + ".dir"), true);
+		try {
+			fs.delete(new Path(args[0] + ".dir"), true);
+		} 
+		catch(Exception ex) {
+			
+		}
 		
 		t1 = System.nanoTime();
 		new Encoder(in, out, cb, args[1]);
