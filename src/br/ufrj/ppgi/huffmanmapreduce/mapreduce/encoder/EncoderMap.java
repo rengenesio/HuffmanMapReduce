@@ -28,9 +28,9 @@ public class EncoderMap extends
 			Mapper<LongWritable, BytesWritable, LongWritable, BytesWritableEncoder>.Context context)
 			throws IOException, InterruptedException {
 		super.setup(context);
-		
+
 		key = new LongWritable(context.getTaskAttemptID().getTaskID().getId());
-		inc_key = context.getNumReduceTasks();	
+		inc_key = context.getNumReduceTasks();
 
 		codification = new Codification[Defines.POWER_BITS_CODIFICATION];
 		symbols = 0;
@@ -44,9 +44,9 @@ public class EncoderMap extends
 			byte symbol = (byte) f.read();
 			byte size = (byte) f.read();
 			byte[] code = new byte[(size & 0xFF)];
-			
+
 			f.read(code, 0, size & (0xFF));
-			
+
 			codification[symbols] = new Codification(symbol, size, new String(code));
 			symbols++;
 		}
@@ -57,7 +57,7 @@ public class EncoderMap extends
 			System.out.println(codification[i].toString());
 		*/
 	}
-	
+
 	public void map(LongWritable key, BytesWritable value, Context context)
 			throws IOException, InterruptedException {
 		BytesWritableEncoder buffer = new BytesWritableEncoder(value.toString().length());
@@ -68,9 +68,9 @@ public class EncoderMap extends
 					buffer.addCode(codification[j]);
 					break;
 				}
-				
 			}
 		}
+
 		context.write(this.key, buffer);
 		this.key.set(this.key.get() + this.inc_key);
 	}
