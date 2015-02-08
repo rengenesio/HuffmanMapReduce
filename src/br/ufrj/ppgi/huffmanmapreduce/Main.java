@@ -22,7 +22,6 @@ public class Main {
 			fs.delete(new Path(args[0] + ".mapreducedir"), true);
 		} 
 		catch(Exception ex) {
-			
 		}
 		
 		t1 = System.nanoTime();

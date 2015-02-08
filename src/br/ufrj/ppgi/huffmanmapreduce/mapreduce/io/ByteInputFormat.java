@@ -14,11 +14,6 @@ public class ByteInputFormat extends FileInputFormat<LongWritable, BytesWritable
 	@Override
 	public RecordReader<LongWritable, BytesWritable> createRecordReader(
 			InputSplit split, TaskAttemptContext context) {
-		try {
-			throw new Exception("Testeeeeee!");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		return new BlockRecordReader();
 	}
 
