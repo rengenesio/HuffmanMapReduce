@@ -29,8 +29,11 @@ public class EncoderMap extends
 			throws IOException, InterruptedException {
 		super.setup(context);
 
-		key = new LongWritable(context.getTaskAttemptID().getTaskID().getId());
-		inc_key = context.getNumReduceTasks();
+		this.key = new LongWritable(context.getTaskAttemptID().getTaskID().getId());
+		this.inc_key = context.getNumReduceTasks();
+		
+		System.out.println("Key: " + key);
+		System.out.println("Inc_key: " + inc_key);
 
 		codification = new Codification[Defines.POWER_BITS_CODIFICATION];
 		symbols = 0;
@@ -73,5 +76,20 @@ public class EncoderMap extends
 
 		context.write(this.key, buffer);
 		this.key.set(this.key.get() + this.inc_key);
+		
+		if(this.key.get() < 0) {
+			System.out.print(this.key);
+		}
+		
 	}
+
+	@Override
+	protected void cleanup(
+			Mapper<LongWritable, BytesWritable, LongWritable, BytesWritableEncoder>.Context context)
+			throws IOException, InterruptedException {
+		System.out.println("Last key: " + this.key);
+		super.cleanup(context);
+	}
+	
+	
 }
