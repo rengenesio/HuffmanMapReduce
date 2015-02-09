@@ -22,7 +22,7 @@ public class Encoder {
 
 	public Encoder(String file_in, String path_out, String numReduces)
 			throws Exception {
-		String[] s = new String[4];
+		String[] s = new String[3];
 		s[0] = file_in;
 		s[1] = path_out;
 		s[2] = numReduces;
