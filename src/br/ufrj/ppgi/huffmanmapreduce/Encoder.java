@@ -28,7 +28,7 @@ public class Encoder {
 		s[2] = numReduces;
 		
 		// MAPREDUCE SYMBOL COUNT
-		ToolRunner.run(new Configuration(), new SymbolCountConfiguration(), s);
+		//ToolRunner.run(new Configuration(), new SymbolCountConfiguration(), s);
 		// END MAPREDUCE SYMBOL COUNT
 		FileToFrequency(path_out);
 		frequencyToNodeArray();

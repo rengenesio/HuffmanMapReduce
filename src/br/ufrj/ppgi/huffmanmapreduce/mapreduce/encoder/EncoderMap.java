@@ -30,10 +30,11 @@ public class EncoderMap extends
 			throws IOException, InterruptedException {
 		super.setup(context);
 		
-		//this.key = new LongWritable(context.getTaskAttemptID().getTaskID().getId());
+		this.key = new LongWritable(context.getTaskAttemptID().getTaskID().getId());
 		this.inc_key = context.getNumReduceTasks();
 		this.key_set = false;
 		
+		System.out.println("IdKey: " + this.key);
 		System.out.println("Inc_key: " + this.inc_key);
 		
 		codification = new Codification[Defines.POWER_BITS_CODIFICATION];
@@ -67,9 +68,9 @@ public class EncoderMap extends
 		BytesWritableEncoder buffer = new BytesWritableEncoder(value.toString().length());
 		
 		if(this.key_set == false) {
-			this.key = key;
+			//this.key = key;
 			this.key_set = true;
-			System.out.println("Key: " + this.key);
+			System.out.println("OffsetKey: " + this.key);
 		}
 
 		for (int i = 0; i < value.getLength(); i++) {
