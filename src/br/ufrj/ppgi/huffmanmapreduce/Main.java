@@ -15,11 +15,11 @@ public class Main {
 		file_in = new String(args[0]);
 		path_out = new String(file_in + ".mapreducedir");
 
-//		try {
-//			fs.delete(new Path(path_out), true);
-//		} 
-//		catch(Exception ex) {
-//		}
+		try {
+			fs.delete(new Path(path_out), true);
+		} 
+		catch(Exception ex) {
+		}
 		
 		t1 = System.nanoTime();
 		new Encoder(file_in, path_out, args[1]);
