@@ -38,7 +38,6 @@ public class SymbolCountConfiguration extends Configured implements Tool {
 
 		// Output
 		FileOutputFormat.setOutputPath(job, new Path(args[1] + "/symbolcount"));
-		System.out.println(args[1] + "/symbolcount");
 		job.setOutputFormatClass(ByteCountOutputFormat.class);
 
 		// Execute job and return status (false -> don't show messages)
