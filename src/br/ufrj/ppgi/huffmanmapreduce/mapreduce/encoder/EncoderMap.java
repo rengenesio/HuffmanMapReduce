@@ -70,7 +70,7 @@ public class EncoderMap extends
 		if(this.key_set == false) {
 			//this.key = key;
 			this.key_set = true;
-			System.out.println("OffsetKey: " + this.key);
+			System.out.println("OffsetKey: " + key);
 		}
 
 		for (int i = 0; i < value.getLength(); i++) {
