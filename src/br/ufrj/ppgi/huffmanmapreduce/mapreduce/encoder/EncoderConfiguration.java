@@ -40,7 +40,7 @@ public class EncoderConfiguration extends Configured implements Tool {
 		// Output
 		FileOutputFormat.setOutputPath(job, new Path(args[1] + "/compressed"));
 		job.setOutputFormatClass(EncoderOutputFormat.class);
-		job.setNumReduceTasks(Integer.parseInt(args[3]));
+		job.setNumReduceTasks(Integer.parseInt(args[2]));
 		
 		// Execute job and return status
 		return job.waitForCompletion(false) ? 0 : 1;
