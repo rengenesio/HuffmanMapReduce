@@ -8,31 +8,27 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {
 		long t, t1, t2;
-		String in, out, cb;
+		String file_in, path_out;
 		Configuration conf = new Configuration();
 		FileSystem fs = FileSystem.get(conf);
 
-		in = new String(args[0]);
-		out = new String(in);
-		cb = new String(in);
-		out += ".mapreducedir/compressed";
-		cb += ".mapreducedir/codification";
+		file_in = new String(args[0]);
+		path_out = new String(file_in + ".mapreducedir");
 
 		try {
-			fs.delete(new Path(args[0] + ".mapreducedir"), true);
+			fs.delete(new Path(path_out), true);
 		} 
 		catch(Exception ex) {
 		}
 		
 		t1 = System.nanoTime();
-		new Encoder(in, out, cb, args[1]);
+		new Encoder(file_in, path_out, args[1]);
 		t2 = System.nanoTime();
 		t = t2 - t1;
 		System.out.println(t/1000000000.0 + " s (encoder)");
 
-		in += ".mapreducedir/decompressed";
 		t1 = System.nanoTime();
-		new Decoder(out, in, cb);
+		new Decoder(path_out);
 		t2 = System.nanoTime();
 		t = t2 - t1;
 		System.out.println(t/1000000000.0 + " s (decoder)");

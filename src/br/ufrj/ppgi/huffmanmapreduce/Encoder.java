@@ -20,29 +20,28 @@ public class Encoder {
 	NodeArray nodeArray;
 	Codification[] codification;
 
-	public Encoder(String file_in, String file_out, String file_cb, String a)
+	public Encoder(String file_in, String path_out, String numReduces)
 			throws Exception {
 		String[] s = new String[4];
 		s[0] = file_in;
-		s[1] = file_out;
-		s[3] = a;
-		s[2] = file_cb;
+		s[1] = path_out;
+		s[2] = numReduces;
 		
-		/* MAPREDUCE SYMBOL COUNT */
+		// MAPREDUCE SYMBOL COUNT
 		ToolRunner.run(new Configuration(), new SymbolCountConfiguration(), s);
-		/* END MAPREDUCE SYMBOL COUNT */
-		FileToFrequency(file_in);
+		// END MAPREDUCE SYMBOL COUNT
+		FileToFrequency(path_out);
 		frequencyToNodeArray();
 		huffmanEncode();
 		treeToCode();
-		codificationToHDFS(file_cb);
-		/* MAPREDUCE SYMBOL ENCODER */
+		codificationToHDFS(path_out);
+		// MAPREDUCE SYMBOL ENCODER
 		ToolRunner.run(new Configuration(), new EncoderConfiguration(), s);
-		/* END MAPREDUCE SYMBOL ENCODER */
+		// END MAPREDUCE SYMBOL ENCODER
 	}
 	
-	public void FileToFrequency(String arg0) throws IOException {
-		Path path = new Path(arg0 + ".mapreducedir/symbolcount/");
+	public void FileToFrequency(String path_out) throws IOException {
+		Path path = new Path(path_out + "/symbolcount");
 		FileSystem fs = FileSystem.get(new Configuration());
 		FileStatus[] status = fs.listStatus(path);
 		
@@ -58,13 +57,17 @@ public class Encoder {
 		frequency[Defines.EOF] = 1;
 		symbols++;
 		
-		/*
+		
 		System.out.println("FREQUENCY: symbol (frequency)");
+		int sum = 0;
 		for (int i = 0; i < frequency.length; i++)
-			if (frequency[i] != 0)
+			if (frequency[i] != 0) {
 				System.out.println((int) i + "(" + frequency[i] + ")");
+				sum += frequency[i];
+			}
+		System.out.println("\nTotal: " + sum);
 		System.out.println("------------------------------");
-		*/
+		
 		
 	}
 	
@@ -89,6 +92,7 @@ public class Encoder {
 
 			nodeArray.removeLastTwoNodes();
 			nodeArray.insert(c);
+			
 			/*
 			System.out.println(nodeArray.toString() + "\n");
 			*/
@@ -135,8 +139,8 @@ public class Encoder {
 		*/
 	}
 
-	public void codificationToHDFS(String arg0) throws IOException {
-		Path path = new Path(arg0);
+	public void codificationToHDFS(String path_out) throws IOException {
+		Path path = new Path(path_out + "/codification");
 		FileSystem fs = FileSystem.get(new Configuration());
 		FSDataOutputStream f = fs.create(path);
 		

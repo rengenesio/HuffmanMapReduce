@@ -20,11 +20,11 @@ public class Decoder {
 	byte[] codificationArrayElementSymbol;
 	boolean[] codificationArrayElementUsed;
 
-	public Decoder(String file_in, String file_out, String file_cb)
+	public Decoder(String path_in)
 			throws IOException {
-		in = new Path(file_in);
-		out = new Path(file_out);
-		cb = new Path(file_cb);
+		in = new Path(path_in + "/compressed");
+		out = new Path(path_in + "/decompressed");
+		cb = new Path(path_in + "/codification");
 
 		fileToCodification();
 		codeToTreeArray();

@@ -19,7 +19,7 @@ public class EncoderConfiguration extends Configured implements Tool {
 		// When implementing tool
 		Configuration conf = this.getConf();
 		conf.set("file_in", args[0]);
-		conf.set("file_cb", args[2]);
+		conf.set("file_cb", args[1] + "/codification");
 
 		// Create job
 		Job job = Job.getInstance(conf, "huffmanEncoder");
@@ -38,7 +38,7 @@ public class EncoderConfiguration extends Configured implements Tool {
 		job.setMapOutputValueClass(BytesWritableEncoder.class);
 
 		// Output
-		FileOutputFormat.setOutputPath(job, new Path(args[1]));
+		FileOutputFormat.setOutputPath(job, new Path(args[1] + "/compressed"));
 		job.setOutputFormatClass(EncoderOutputFormat.class);
 		job.setNumReduceTasks(Integer.parseInt(args[3]));
 		

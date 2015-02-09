@@ -19,8 +19,6 @@ public class SymbolCountConfiguration extends Configured implements Tool {
 		// When implementing tool
 		Configuration conf = this.getConf();
 		
-		//conf.set("yarn.app.mapreduce.am.log.level", "DEBUG");
-
 		// Create job
 		Job job = Job.getInstance(conf, "huffmanSymbolCount");
 		job.setJarByClass(SymbolCountConfiguration.class);
@@ -39,7 +37,7 @@ public class SymbolCountConfiguration extends Configured implements Tool {
 		job.setMapOutputValueClass(LongWritable.class);
 
 		// Output
-		FileOutputFormat.setOutputPath(job, new Path(args[0] + ".mapreducedir/symbolcount"));
+		FileOutputFormat.setOutputPath(job, new Path(args[1]));
 		job.setOutputFormatClass(ByteCountOutputFormat.class);
 
 		// Execute job and return status (false -> don't show messages)
