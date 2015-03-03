@@ -116,6 +116,7 @@ public class DecoderSequential {
 							bufferOutput[bufferOutputIndex++] = codificationArrayElementSymbol[codificationArrayIndex];
 							
 							if(bufferOutputIndex >= Defines.writeBufferSize) {
+								System.out.println("vou escrever: " + bufferOutputIndex);
 								outputStream.write(bufferOutput, 0, bufferOutputIndex);
 								bufferOutputIndex = 0;
 							}
