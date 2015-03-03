@@ -4,13 +4,18 @@ public class Defines {
 	//public static final String HDFS_SERVER = "hdfs://localhost:9000";
 	//public static final String HDFS_SERVER = "hdfs://hadoop-nn:9000";
 	
-	public static final int POWER_BITS_CODIFICATION = 256;
+	//public static final int POWER_BITS_CODIFICATION = 256;
 	
 	public static final int BYTE_BIT = 8;
 	
 	
 	public static final int EOB = 3;
 	public static final int EOF = 4;
+	
+	public static final int twoPowerBitsCodification = 256;
+	
+	
+	public static final int writeBufferSize = 4096;
 	
 	
 	/*
@@ -32,4 +37,11 @@ public class Defines {
 	#define ALIGN_CODIFICATION					5
 	#define ALIGN_CODIFICATION_ARRAY_ELEMENT	6
 	*/
+	
+	public static final String pathSuffix = ".mapreducedir/";
+	public static final String compressedSplitsPath = "compressed/";
+	public static final String symbolCountSplitsPath = "symbolcount/";
+	//public static final String compressedFileName = "part-";
+	public static final String codificationFileName = "codification";
+	public static final String decompressedPath = "decompressed/";
 }

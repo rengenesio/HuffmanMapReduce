@@ -12,6 +12,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 
 import br.ufrj.ppgi.huffmanmapreduce.Codification;
 import br.ufrj.ppgi.huffmanmapreduce.Defines;
+import br.ufrj.ppgi.huffmanmapreduce.SerializationUtility;
 import br.ufrj.ppgi.huffmanmapreduce.mapreduce.io.BytesWritableEncoder;
 
 public class EncoderMap extends
@@ -22,7 +23,7 @@ public class EncoderMap extends
 	boolean key_set;
 	
 	short symbols = 0;
-	Codification[] codification;
+	Codification[] codificationArray = new Codification[Defines.twoPowerBitsCodification];;
 
 	@Override
 	protected void setup(
@@ -32,51 +33,19 @@ public class EncoderMap extends
 		
 		this.key = new LongWritable(context.getTaskAttemptID().getTaskID().getId());
 		this.inc_key = context.getNumReduceTasks();
-		this.key_set = false;
-		
-		System.out.println("IdKey: " + this.key);
-		System.out.println("Inc_key: " + this.inc_key);
-		
-		codification = new Codification[Defines.POWER_BITS_CODIFICATION];
-		symbols = 0;
 
-		String file_cb = context.getConfiguration().get("file_cb");
-		Path path = new Path(file_cb);
-		FileSystem fs = FileSystem.get(new Configuration());
-		FSDataInputStream f = fs.open(path);
-
-		while (f.available() != 0) {
-			byte symbol = (byte) f.read();
-			byte size = (byte) f.read();
-			byte[] code = new byte[(size & 0xFF)];
-
-			f.read(code, 0, size & (0xFF));
-
-			codification[symbols] = new Codification(symbol, size, new String(code));
-			symbols++;
-		}
-
-		/*
-		System.out.println("CODIFICATION: symbol (size) code"); 
-		for(short i = 0 ; i < symbols ; i++)
-			System.out.println(codification[i].toString());
-		*/
+		fileToCodification(context.getConfiguration());
 	}
 
 	public void map(LongWritable key, BytesWritable value, Context context)
 			throws IOException, InterruptedException {
 		BytesWritableEncoder buffer = new BytesWritableEncoder(value.toString().length());
 		
-		if(this.key_set == false) {
-			//this.key = key;
-			this.key_set = true;
-			System.out.println("OffsetKey: " + key);
-		}
-
-		for (int i = 0; i < value.getLength(); i++) {
+		int valueLengthInBytes = value.getLength();
+		for (int i = 0 ; i < valueLengthInBytes ; i++) {
 			for (short j = 0; j < symbols; j++) {
-				if (codification[j].symbol == value.getBytes()[i]) {
-					buffer.addCode(codification[j]);
+				if (codificationArray[j].symbol == value.getBytes()[i]) {
+					buffer.addCode(codificationArray[j]);
 					break;
 				}
 			}
@@ -93,5 +62,21 @@ public class EncoderMap extends
 		super.cleanup(context);
 	}
 	
+	
+	public void fileToCodification(Configuration configuration) throws IOException {
+		FileSystem fileSystem = FileSystem.get(configuration);
+		FSDataInputStream inputStream = fileSystem.open(new Path(configuration.get("fileName") + Defines.pathSuffix + Defines.codificationFileName));
+
+		byte[] byteArray = new byte[inputStream.available()];
+		inputStream.readFully(byteArray);
+
+		this.codificationArray = SerializationUtility.deserializeCodificationArray(byteArray);
+		
+		/*
+		System.out.println("CODIFICATION: symbol (size) code"); 
+		for(short i = 0 ; i < symbols ; i++)
+			System.out.println(codificationArray[i].toString());
+		*/
+	}
 	
 }

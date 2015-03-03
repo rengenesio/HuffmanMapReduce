@@ -10,6 +10,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 
+import br.ufrj.ppgi.huffmanmapreduce.Defines;
 import br.ufrj.ppgi.huffmanmapreduce.mapreduce.io.ByteCountOutputFormat;
 import br.ufrj.ppgi.huffmanmapreduce.mapreduce.io.ByteInputFormat;
 
@@ -20,16 +21,19 @@ public class SymbolCountConfiguration extends Configured implements Tool {
 		Configuration conf = this.getConf();
 		
 		// Create job
-		Job job = Job.getInstance(conf, "huffmanSymbolCount");
+		Job job = Job.getInstance(conf, "HuffmanSymbolCount");
 		job.setJarByClass(SymbolCountConfiguration.class);
 
-		// Setup MapReduce job do not specify the number of Reducer
+		// Setup MapReduce job
 		job.setMapperClass(SymbolCountMap.class);
 		job.setCombinerClass(SymbolCountReduce.class);
 		job.setReducerClass(SymbolCountReduce.class);
+		
+		// Parse args
+		String fileName = args[0];
 
 		// Input
-		FileInputFormat.addInputPath(job, new Path(args[0]));
+		FileInputFormat.addInputPath(job, new Path(fileName));
 		job.setInputFormatClass(ByteInputFormat.class);
 
 		// Specify key / value
@@ -37,7 +41,7 @@ public class SymbolCountConfiguration extends Configured implements Tool {
 		job.setMapOutputValueClass(LongWritable.class);
 
 		// Output
-		FileOutputFormat.setOutputPath(job, new Path(args[1] + "/symbolcount"));
+		FileOutputFormat.setOutputPath(job, new Path(fileName + Defines.pathSuffix + Defines.symbolCountSplitsPath));
 		job.setOutputFormatClass(ByteCountOutputFormat.class);
 
 		// Execute job and return status (false -> don't show messages)

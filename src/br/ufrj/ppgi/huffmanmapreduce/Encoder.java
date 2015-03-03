@@ -15,33 +15,33 @@ import br.ufrj.ppgi.huffmanmapreduce.mapreduce.encoder.EncoderConfiguration;
 import br.ufrj.ppgi.huffmanmapreduce.mapreduce.symbolcount.SymbolCountConfiguration;
 
 public class Encoder {
-	long[] frequency = new long[Defines.POWER_BITS_CODIFICATION];
+	long[] frequency = new long[Defines.twoPowerBitsCodification];
 	short symbols = 0;
 	NodeArray nodeArray;
 	Codification[] codification;
 
-	public Encoder(String file_in, String path_out, String numReduces)
+	public Encoder(String fileName, int numReduces)
 			throws Exception {
-		String[] s = new String[3];
-		s[0] = file_in;
-		s[1] = path_out;
-		s[2] = numReduces;
+		String[] s = new String[2];
+		s[0] = fileName;
+		s[1] = Integer.toString(numReduces);
 		
 		// MAPREDUCE SYMBOL COUNT
 		ToolRunner.run(new Configuration(), new SymbolCountConfiguration(), s);
 		// END MAPREDUCE SYMBOL COUNT
-		FileToFrequency(path_out);
+		
+		FileToFrequency(fileName);
 		frequencyToNodeArray();
 		huffmanEncode();
 		treeToCode();
-		codificationToHDFS(path_out);
+		codificationToHDFS(fileName);
 		// MAPREDUCE SYMBOL ENCODER
 		ToolRunner.run(new Configuration(), new EncoderConfiguration(), s);
 		// END MAPREDUCE SYMBOL ENCODER
 	}
 	
-	public void FileToFrequency(String path_out) throws IOException {
-		Path path = new Path(path_out + "/symbolcount");
+	public void FileToFrequency(String fileName) throws IOException {
+		Path path = new Path(fileName + Defines.pathSuffix + Defines.symbolCountSplitsPath);
 		FileSystem fs = FileSystem.get(new Configuration());
 		FileStatus[] status = fs.listStatus(path);
 		
@@ -73,7 +73,7 @@ public class Encoder {
 	public void frequencyToNodeArray() {
 		nodeArray = new NodeArray((short) (symbols + 1));
 
-		for (short i = 0; i < Defines.POWER_BITS_CODIFICATION; i++)
+		for (short i = 0; i < Defines.twoPowerBitsCodification; i++)
 			if (frequency[i] > 0)
 				nodeArray.insert(new Node((byte) i, frequency[i]));
 		
@@ -101,10 +101,12 @@ public class Encoder {
 	public void treeToCode() {
 		Stack<Node> s = new Stack<Node>();
 		codification = new Codification[symbols];
+		
 		Node n = nodeArray.get(0);
 		short codes = 0;
-		String path = new String();
+		byte[] path = new byte[33];
 
+		byte size = 0;
 		s.push(n);
 		while (codes < symbols) {
 			if (n.left != null) {
@@ -112,21 +114,21 @@ public class Encoder {
 					s.push(n);
 					n.visited = true;
 					n = n.left;
-					path += "0";
+					path[size++] = 0;
 				} else if (!n.right.visited) {
 					s.push(n);
 					n.visited = true;
 					n = n.right;
-					path += "1";
+					path[size++] = 1;
 				} else {
-					path = path.substring(0, path.length() - 1);
+					size--;
 					n = s.pop();
 				}
 			} else {
 				n.visited = true;
-				codification[codes] = new Codification(n.symbol, path);
-				path = path.substring(0, path.length() - 1);
+				codification[codes] = new Codification(n.symbol, size, path);
 				n = s.pop();
+				size--;
 				codes++;
 			}
 		}
@@ -139,12 +141,14 @@ public class Encoder {
 	}
 
 	public void codificationToHDFS(String path_out) throws IOException {
-		Path path = new Path(path_out + "/codification");
+		Path path = new Path(path_out + Defines.pathSuffix + Defines.codificationFileName);
 		FileSystem fs = FileSystem.get(new Configuration());
 		FSDataOutputStream f = fs.create(path);
 		
-		for (short i = 0; i < symbols; i++)
-			f.write(codification[i].toByteArray(), 0, codification[i].toByteArray().length);
+		//for (short i = 0; i < symbols; i++)
+			
+			//f.write(codification[i].toByteArray(), 0, codification[i].toByteArray().length);
+			f.write(SerializationUtility.serializeCodificationArray(codification));
 		f.close();
 	}
 }

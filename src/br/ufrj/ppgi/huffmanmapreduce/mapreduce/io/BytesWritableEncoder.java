@@ -7,6 +7,7 @@ import java.io.IOException;
 import org.apache.hadoop.io.BinaryComparable;
 import org.apache.hadoop.io.WritableComparable;
 
+import br.ufrj.ppgi.huffmanmapreduce.BitUtility;
 import br.ufrj.ppgi.huffmanmapreduce.Codification;
 import br.ufrj.ppgi.huffmanmapreduce.Defines;
 
@@ -51,7 +52,7 @@ public class BytesWritableEncoder extends BinaryComparable implements WritableCo
 	}
 
 	public boolean setCapacity(int new_cap) {
-		/*** ERRO ALOCANDO 69175754 ***/
+		// ERRO ALOCANDO 69175754
 		if (new_cap > 67108864) {
 			return false;
 		}
@@ -112,10 +113,8 @@ public class BytesWritableEncoder extends BinaryComparable implements WritableCo
 
 	public void addBit(boolean s) {
 		int pos = Defines.BYTE_BIT - (this.bits % Defines.BYTE_BIT) - 1;
-		if (s)
-			b[this.index] |= 1 << pos;
-		else
-			b[this.index] &= ~(1 << pos);
+
+		BitUtility.setBit(this.b, pos, s);
 
 		if (++this.bits % 8 == 1)
 			this.length++;
@@ -125,10 +124,8 @@ public class BytesWritableEncoder extends BinaryComparable implements WritableCo
 
 	public boolean getBit(int pos) {
 		int bit = b[pos / 8] & (1 << Defines.BYTE_BIT - (pos % 8) - 1);
-		if (bit > 0)
-			return true;
-
-		return false;
+		
+		return BitUtility.checkBit(this.b, bit);
 	}
 
 	public boolean addBytesWritable(BytesWritableEncoder bw) {
@@ -147,7 +144,7 @@ public class BytesWritableEncoder extends BinaryComparable implements WritableCo
 				return false;
 				
 		for (short i = 0; i < c.size; i++) {
-			if (c.code.charAt(i) == '0')
+			if (c.code[i] == 0)
 				this.addBit(false);
 			else
 				this.addBit(true);

@@ -10,7 +10,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 import br.ufrj.ppgi.huffmanmapreduce.Defines;
 
 public class SymbolCountMap extends Mapper<Object, BytesWritable, IntWritable, LongWritable>{
-	long[] frequency = new long[Defines.POWER_BITS_CODIFICATION];
+	long[] frequency = new long[Defines.twoPowerBitsCodification];
 	
 	int size;
 	byte[] bytes;
@@ -30,7 +30,7 @@ public class SymbolCountMap extends Mapper<Object, BytesWritable, IntWritable, L
 			throws IOException, InterruptedException {
 		super.cleanup(context);
 		
-		for(int i = 0 ; i < Defines.POWER_BITS_CODIFICATION ; i++) {
+		for(int i = 0 ; i < Defines.twoPowerBitsCodification ; i++) {
 			if(frequency[i] != 0) {
 				context.write(new IntWritable(i), new LongWritable(frequency[i]));
 			}
