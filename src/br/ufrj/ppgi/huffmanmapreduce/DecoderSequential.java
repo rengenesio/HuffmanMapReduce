@@ -97,10 +97,9 @@ public class DecoderSequential {
 		int readBytes = 0;
 		int totalReadBytes = 0;
 		int codificationArrayIndex = 0;
-		System.out.println("aaaaa");
 		for(int i = 0 ; i < fileStatusArray.length ; i++) {
 			FSDataInputStream inputStream = fileSystem.open(fileStatusArray[i].getPath());
-			System.out.println("bbbbbb");
+			
 			do {
 				readBytes = inputStream.read(totalReadBytes, bufferInput, 0, (totalReadBytes + Defines.readBufferSize > inputStream.available() ? inputStream.available() : Defines.readBufferSize));
 				totalReadBytes += readBytes;
@@ -116,7 +115,6 @@ public class DecoderSequential {
 						if (codificationArrayElementSymbol[codificationArrayIndex] != 0) {
 							bufferOutput[bufferOutputIndex++] = codificationArrayElementSymbol[codificationArrayIndex];
 							if(bufferOutputIndex >= Defines.writeBufferSize) {
-								System.out.println("vou escrever: " + bufferOutputIndex);
 								outputStream.write(bufferOutput, 0, bufferOutputIndex);
 								bufferOutputIndex = 0;
 							}
