@@ -23,6 +23,9 @@ public class EncoderConfiguration extends Configured implements Tool {
 		// Parse args
 		String fileName = args[0];
 		//int numReduces = Integer.parseInt(args[1]);
+		
+		// Configuration to be accessed by map classes
+		conf.set("fileName", fileName);
 
 		// Create job
 		Job job = Job.getInstance(conf, "HuffmanEncoder");
@@ -44,11 +47,7 @@ public class EncoderConfiguration extends Configured implements Tool {
 		// Output
 		FileOutputFormat.setOutputPath(job, new Path(fileName + Defines.pathSuffix + Defines.compressedSplitsPath));
 		job.setOutputFormatClass(EncoderOutputFormat.class);
-		
-		// Configuration to be accessed by map classes
-		System.out.println(fileName);
-		conf.set("fileName", fileName);
-		
+	
 		// Execute job and return status
 		return job.waitForCompletion(false) ? 0 : 1;
 	}
