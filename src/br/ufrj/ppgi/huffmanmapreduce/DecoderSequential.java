@@ -82,6 +82,7 @@ public class DecoderSequential {
 	
 	public void huffmanDecompressor(String compressedPath, String decompressedFileName) throws IOException {
 		Path pathIn = new Path(compressedPath);
+		FileStatus[] fileStatusArray = fileSystem.listStatus(pathIn);
 		
 		Path pathOut = new Path(decompressedFileName);
 		FSDataOutputStream outputStream = fileSystem.create(pathOut);
@@ -97,16 +98,16 @@ public class DecoderSequential {
 		int totalReadBytes = 0;
 		int codificationArrayIndex = 0;
 		System.out.println("aaaaa");
-		for(FileStatus fileStatus : this.fileSystem.listStatus(pathIn)) {
-			FSDataInputStream inputStream = fileSystem.open(fileStatus.getPath());
+		for(int i = 1 ; i < fileStatusArray.length ; i++) {
+			FSDataInputStream inputStream = fileSystem.open(fileStatusArray[i].getPath());
 			System.out.println("bbbbbb");
 			do {
 				readBytes = inputStream.read(totalReadBytes, bufferInput, 0, (totalReadBytes + Defines.readBufferSize > inputStream.available() ? inputStream.available() : Defines.readBufferSize));
 				totalReadBytes += readBytes;
 				
-				for (int i = 0; i < readBytes * 8 ; i++) {
+				for (int j = 0; j < readBytes * 8 ; j++) {
 					codificationArrayIndex <<= 1;
-					if (BitUtility.checkBit(bufferInput, i) == false)
+					if (BitUtility.checkBit(bufferInput, j) == false)
 						codificationArrayIndex += 1;
 					else
 						codificationArrayIndex += 2;
