@@ -22,6 +22,8 @@ public class EncoderMap extends
 	int inc_key;
 	
 	Codification[] codificationArray = new Codification[Defines.twoPowerBitsCodification];
+	BytesWritableEncoder buffer = new BytesWritableEncoder(Defines.writeBufferSize);
+	BytesWritableEncoder lastMapBuffer = new BytesWritableEncoder();
 
 	@Override
 	protected void setup(
@@ -36,21 +38,25 @@ public class EncoderMap extends
 
 	public void map(LongWritable key, BytesWritable value, Context context)
 			throws IOException, InterruptedException {
-		BytesWritableEncoder buffer = new BytesWritableEncoder(value.toString().length());
-
+		
+		buffer.addBytesWritable(lastMapBuffer);
 		int valueLengthInBytes = value.getLength();
+				
 		for (int i = 0 ; i < valueLengthInBytes ; i++) {
 			for (short j = 0; j < this.codificationArray.length; j++) {
 				if (codificationArray[j].symbol == value.getBytes()[i]) {
-					buffer.addCode(codificationArray[j]);
+					if(buffer.addCode(codificationArray[j]) == false) {
+						context.write(this.key, buffer);
+						this.key.set(this.key.get() + this.inc_key);
+						buffer.clean();
+						buffer.addCode(codificationArray[j]);
+					}
 					break;
 				}
 			}
 		}
 
-		System.out.println(buffer.length);
-		context.write(this.key, buffer);
-		this.key.set(this.key.get() + this.inc_key);
+		this.lastMapBuffer= buffer;
 	}
 
 	@Override
