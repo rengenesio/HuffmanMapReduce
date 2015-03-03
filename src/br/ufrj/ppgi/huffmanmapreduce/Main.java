@@ -85,7 +85,7 @@ public class Main {
 			} catch(Exception ex) { }
 			
 			startTime = System.nanoTime();
-			new DecoderSequential(fileName + ".yarnmultithreadv2dir" + Defines.compressedSplitsPath, fileName + Defines.pathSuffix + "sequentialdecompressed", fileName + Defines.pathSuffix + Defines.codificationFileName);
+			new DecoderSequential(fileName + ".yarnmultithreadv2dir/" + Defines.compressedSplitsPath, fileName + Defines.pathSuffix + "sequentialdecompressed", fileName + Defines.pathSuffix + Defines.codificationFileName);
 			endTime = System.nanoTime();
 			System.out.println("Descompressão completa!");
 				
