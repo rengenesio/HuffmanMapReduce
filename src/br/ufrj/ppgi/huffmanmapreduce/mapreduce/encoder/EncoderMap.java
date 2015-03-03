@@ -20,7 +20,6 @@ public class EncoderMap extends
 
 	LongWritable key;
 	int inc_key;
-	boolean key_set;
 	
 	short symbols = 0;
 	Codification[] codificationArray = new Codification[Defines.twoPowerBitsCodification];;
@@ -32,7 +31,8 @@ public class EncoderMap extends
 		super.setup(context);
 		
 		this.key = new LongWritable(context.getTaskAttemptID().getTaskID().getId());
-		this.inc_key = context.getNumReduceTasks();
+		//this.inc_key = context.getNumReduceTasks();
+		this.inc_key = 1;
 
 		fileToCodification(context.getConfiguration());
 	}

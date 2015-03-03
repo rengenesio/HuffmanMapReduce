@@ -15,7 +15,9 @@ public class Defines {
 	public static final int twoPowerBitsCodification = 256;
 	
 	
+	public static final int readBufferSize = 4096;
 	public static final int writeBufferSize = 4096;
+	
 	
 	
 	/*

@@ -4,7 +4,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
-import br.ufrj.ppgi.huffmansequential.Decoder;
 
 public class Main {
 
@@ -86,7 +85,7 @@ public class Main {
 			} catch(Exception ex) { }
 			
 			startTime = System.nanoTime();
-			new Decoder(fileName + Defines.pathSuffix + Defines.compressedSplitsPath, fileName + Defines.pathSuffix + "sequentialdecompressed", fileName + Defines.pathSuffix + Defines.codificationFileName);
+			new DecoderSequential(fileName + Defines.pathSuffix + Defines.compressedSplitsPath, fileName + Defines.pathSuffix + "sequentialdecompressed", fileName + Defines.pathSuffix + Defines.codificationFileName);
 			endTime = System.nanoTime();
 			System.out.println("Descompressão completa!");
 				

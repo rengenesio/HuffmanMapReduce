@@ -12,6 +12,7 @@ import org.apache.hadoop.util.ToolRunner;
 
 import br.ufrj.ppgi.huffmanmapreduce.mapreduce.decoder.DecoderConfiguration;
 
+
 public class Decoder {
 	Codification[] codification;
 	short symbols = 0;
@@ -29,24 +30,5 @@ public class Decoder {
 		// MAPREDUCE SYMBOL COUNT
 		ToolRunner.run(new Configuration(), new DecoderConfiguration(), s);
 		// END MAPREDUCE SYMBOL COUNT
-
-		huffmanDecode();
-	}
-
-	public void huffmanDecode() throws IOException {
-		byte[] buffer = new byte[1];
-		BitSet bufferBits = new BitSet();
-		int index = 0;
-
-		FileSystem fs = FileSystem.get(new Configuration());
-		FileStatus[] status = fs.listStatus(in);
-		FSDataOutputStream fout = fs.create(out);
-
-		for (short i = 1; i < status.length; i++) {
-			FSDataInputStream fin = fs.open(status[i].getPath());
-
-			
-		}
-		fout.close();
 	}
 }
