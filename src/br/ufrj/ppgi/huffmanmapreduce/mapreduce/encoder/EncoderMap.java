@@ -69,12 +69,14 @@ public class EncoderMap extends
 	
 	public void fileToCodification(Configuration configuration) throws IOException {
 		FileSystem fileSystem = FileSystem.get(configuration);
+		System.out.println(configuration.get("fileName"));
 		FSDataInputStream inputStream = fileSystem.open(new Path(configuration.get("fileName") + Defines.pathSuffix + Defines.codificationFileName));
-
+		System.out.println("bbbb");
 		byte[] byteArray = new byte[inputStream.available()];
 		inputStream.readFully(byteArray);
-
+		System.out.println("cccc");
 		this.codificationArray = SerializationUtility.deserializeCodificationArray(byteArray);
+		System.out.println("dddd");
 		
 		/*
 		System.out.println("CODIFICATION: symbol (size) code"); 
