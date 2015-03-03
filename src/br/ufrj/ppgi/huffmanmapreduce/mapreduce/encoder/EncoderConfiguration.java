@@ -46,6 +46,7 @@ public class EncoderConfiguration extends Configured implements Tool {
 		job.setOutputFormatClass(EncoderOutputFormat.class);
 		
 		// Configuration to be accessed by map classes
+		System.out.println(fileName);
 		conf.set("fileName", fileName);
 		
 		// Execute job and return status
