@@ -30,6 +30,9 @@ public class EncoderMap extends
 			throws IOException, InterruptedException {
 		super.setup(context);
 		
+		System.out.println("aaaaaaaaaaaaaaaaaaaa");
+		System.err.println("aaaaaaaaaaaaaaaaaaaa");
+		
 		this.key = new LongWritable(context.getTaskAttemptID().getTaskID().getId());
 		//this.inc_key = context.getNumReduceTasks();
 		this.inc_key = 1;
