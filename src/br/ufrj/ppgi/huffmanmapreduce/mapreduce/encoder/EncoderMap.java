@@ -21,8 +21,7 @@ public class EncoderMap extends
 	LongWritable key;
 	int inc_key;
 	
-	short symbols = 0;
-	Codification[] codificationArray = new Codification[Defines.twoPowerBitsCodification];;
+	Codification[] codificationArray = new Codification[Defines.twoPowerBitsCodification];
 
 	@Override
 	protected void setup(
@@ -30,23 +29,18 @@ public class EncoderMap extends
 			throws IOException, InterruptedException {
 		super.setup(context);
 		
-		System.out.println("aaaaaaaaaaaaaaaaaaaa");
-		
 		this.key = new LongWritable(context.getTaskAttemptID().getTaskID().getId());
-		//this.inc_key = context.getNumReduceTasks();
 		this.inc_key = 1;
-		System.out.println("aaaaaaaaaaaaaaaaaaaa");
 		fileToCodification(context.getConfiguration());
-		System.out.println("aaaaaaaaaaaaaaaaaaaa");
 	}
 
 	public void map(LongWritable key, BytesWritable value, Context context)
 			throws IOException, InterruptedException {
 		BytesWritableEncoder buffer = new BytesWritableEncoder(value.toString().length());
-		System.out.println("aaaaaaaaaaaaaaaaaaaa");
+
 		int valueLengthInBytes = value.getLength();
 		for (int i = 0 ; i < valueLengthInBytes ; i++) {
-			for (short j = 0; j < symbols; j++) {
+			for (short j = 0; j < this.codificationArray.length; j++) {
 				if (codificationArray[j].symbol == value.getBytes()[i]) {
 					buffer.addCode(codificationArray[j]);
 					break;
@@ -69,14 +63,13 @@ public class EncoderMap extends
 	
 	public void fileToCodification(Configuration configuration) throws IOException {
 		FileSystem fileSystem = FileSystem.get(configuration);
-		System.out.println(configuration.get("fileName"));
 		FSDataInputStream inputStream = fileSystem.open(new Path(configuration.get("fileName") + Defines.pathSuffix + Defines.codificationFileName));
-		System.out.println("bbbb");
+
 		byte[] byteArray = new byte[inputStream.available()];
 		inputStream.readFully(byteArray);
-		System.out.println("cccc");
+		
 		this.codificationArray = SerializationUtility.deserializeCodificationArray(byteArray);
-		System.out.println("dddd");
+		
 		
 		/*
 		System.out.println("CODIFICATION: symbol (size) code"); 
