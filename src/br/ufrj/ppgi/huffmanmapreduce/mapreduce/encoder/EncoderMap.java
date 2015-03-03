@@ -51,6 +51,7 @@ public class EncoderMap extends
 			}
 		}
 
+		System.out.println(buffer.length);
 		context.write(this.key, buffer);
 		this.key.set(this.key.get() + this.inc_key);
 	}
