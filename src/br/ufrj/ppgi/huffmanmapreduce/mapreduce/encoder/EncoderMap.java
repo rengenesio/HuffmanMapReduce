@@ -31,19 +31,19 @@ public class EncoderMap extends
 		super.setup(context);
 		
 		System.out.println("aaaaaaaaaaaaaaaaaaaa");
-		System.err.println("aaaaaaaaaaaaaaaaaaaa");
 		
 		this.key = new LongWritable(context.getTaskAttemptID().getTaskID().getId());
 		//this.inc_key = context.getNumReduceTasks();
 		this.inc_key = 1;
-
+		System.out.println("aaaaaaaaaaaaaaaaaaaa");
 		fileToCodification(context.getConfiguration());
+		System.out.println("aaaaaaaaaaaaaaaaaaaa");
 	}
 
 	public void map(LongWritable key, BytesWritable value, Context context)
 			throws IOException, InterruptedException {
 		BytesWritableEncoder buffer = new BytesWritableEncoder(value.toString().length());
-		
+		System.out.println("aaaaaaaaaaaaaaaaaaaa");
 		int valueLengthInBytes = value.getLength();
 		for (int i = 0 ; i < valueLengthInBytes ; i++) {
 			for (short j = 0; j < symbols; j++) {
