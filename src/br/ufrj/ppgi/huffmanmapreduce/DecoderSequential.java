@@ -98,7 +98,7 @@ public class DecoderSequential {
 		int totalReadBytes = 0;
 		int codificationArrayIndex = 0;
 		System.out.println("aaaaa");
-		for(int i = 1 ; i < fileStatusArray.length ; i++) {
+		for(int i = 0 ; i < fileStatusArray.length ; i++) {
 			FSDataInputStream inputStream = fileSystem.open(fileStatusArray[i].getPath());
 			System.out.println("bbbbbb");
 			do {
