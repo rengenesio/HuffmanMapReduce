@@ -28,8 +28,6 @@ public class DecoderSequential {
 		// Initializes HDFS access object
 		this.fileSystem = FileSystem.get(this.configuration);
 		
-		
-		
 		fileToCodification(codificationFileName);
 		codeToTreeArray();
 		huffmanDecompressor(compressedPath, decompressedFileName);
@@ -98,9 +96,10 @@ public class DecoderSequential {
 		int readBytes = 0;
 		int totalReadBytes = 0;
 		int codificationArrayIndex = 0;
+		System.out.println("aaaaa");
 		for(FileStatus fileStatus : this.fileSystem.listStatus(pathIn)) {
 			FSDataInputStream inputStream = fileSystem.open(fileStatus.getPath());
-			
+			System.out.println("bbbbbb");
 			do {
 				readBytes = inputStream.read(totalReadBytes, bufferInput, 0, (totalReadBytes + Defines.readBufferSize > inputStream.available() ? inputStream.available() : Defines.readBufferSize));
 				totalReadBytes += readBytes;
