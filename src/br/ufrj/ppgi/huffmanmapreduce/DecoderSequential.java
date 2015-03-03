@@ -70,12 +70,12 @@ public class DecoderSequential {
 		}
 
 		
-		System.out.println("codeToTreeArray():");
-		System.out.println("TREE_ARRAY:"); 
-		for(int i = 0 ; i < Math.pow(2,(max_code + 1)) ; i++) 
-			if(codificationArrayElementUsed[i])
-				System.out.println("i: " + i + " -> " + codificationArrayElementSymbol[i]);
-		System.out.println("------------------------------");
+//		System.out.println("codeToTreeArray():");
+//		System.out.println("TREE_ARRAY:"); 
+//		for(int i = 0 ; i < Math.pow(2,(max_code + 1)) ; i++) 
+//			if(codificationArrayElementUsed[i])
+//				System.out.println("i: " + i + " -> " + codificationArrayElementSymbol[i]);
+//		System.out.println("------------------------------");
 		
 	}
 	
@@ -114,7 +114,7 @@ public class DecoderSequential {
 					if (codificationArrayElementUsed[codificationArrayIndex]) {
 						if (codificationArrayElementSymbol[codificationArrayIndex] != 0) {
 							bufferOutput[bufferOutputIndex++] = codificationArrayElementSymbol[codificationArrayIndex];
-							
+							System.out.println(bufferOutput[bufferOutputIndex-1]);
 							if(bufferOutputIndex >= Defines.writeBufferSize) {
 								System.out.println("vou escrever: " + bufferOutputIndex);
 								outputStream.write(bufferOutput, 0, bufferOutputIndex);
