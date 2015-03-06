@@ -22,7 +22,7 @@ public class EncoderMap extends
 	int inc_key;
 	
 	Codification[] codificationArray = new Codification[Defines.twoPowerBitsCodification];
-	BytesWritableEncoder buffer = new BytesWritableEncoder(Defines.writeBufferSize);
+	BytesWritableEncoder buffer = new BytesWritableEncoder(Defines.writeBufferSize*1000);
 
 	@Override
 	protected void setup(
