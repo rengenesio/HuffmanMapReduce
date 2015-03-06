@@ -14,7 +14,7 @@ import br.ufrj.ppgi.huffmanmapreduce.Defines;
 public class BytesWritableEncoder extends BinaryComparable implements WritableComparable<BinaryComparable> {
 	private static final byte[] EMPTY_BYTES = {};
 
-	public int index, length, bits;
+	public int length, bits;
 	public byte[] b;
 	public boolean complete = false;
 
@@ -31,7 +31,6 @@ public class BytesWritableEncoder extends BinaryComparable implements WritableCo
 		this.b = b;
 		this.length = bytes;
 		this.bits = bits;
-		this.index = bits / 8;
 	}
 	
 	@Override
@@ -112,58 +111,59 @@ public class BytesWritableEncoder extends BinaryComparable implements WritableCo
 	}
 
 	public void addBit(boolean s) {
-		int pos = Defines.BYTE_BIT - (this.bits % Defines.BYTE_BIT) - 1;
+		BitUtility.setBit(this.b, this.bits, s);
 
-		BitUtility.setBit(this.b, pos, s);
-
-		if (++this.bits % 8 == 1)
+		if (++this.bits % 8 == 1) {
 			this.length++;
-		if (pos == 0)
-			this.index++;
+		}
 	}
 
 	public boolean getBit(int pos) {
-		int bit = b[pos / 8] & (1 << Defines.BYTE_BIT - (pos % 8) - 1);
-		
-		return BitUtility.checkBit(this.b, bit);
+		return BitUtility.checkBit(this.b, pos);
 	}
 
 	public boolean addBytesWritable(BytesWritableEncoder bw) {
-		if (this.b.length < this.getLength() + bw.getLength())
-			if (!this.setCapacity(this.getLength() + bw.getLength()))
+		if (this.b.length < this.length + bw.length) {
+			if (!this.setCapacity(this.length + bw.length)) {
 				return false;
-		for (int i = 0; i < bw.bits ; i++)
+			}
+		}
+		
+		for (int i = 0; i < bw.bits ; i++) {
 			this.addBit(bw.getBit(i));
+		}
 		
 		return true;
 	}
 
 	public boolean addCode(Codification c) {
-		if (this.b.length < this.getLength() + (c.size / 8) + 1)
-			if(!this.setCapacity(this.getLength() + (c.size / 8) + 1))
+		if (this.b.length < this.length + (c.size / Defines.BYTE_BIT) + 1)
+			if(!this.setCapacity(this.length + (c.size / Defines.BYTE_BIT) + 1))
 				return false;
 				
 		for (short i = 0; i < c.size; i++) {
-			if (c.code[i] == 0)
+			if (c.code[i] == 0) {
 				this.addBit(false);
-			else
+			}
+			else {
 				this.addBit(true);
+			}
 		}
 		
 		return true;
 	}
 	
 	public void clean() {
-		if(this.index == this.getLength()) {
-			this.length = 0;
-			this.bits = 0;
-			this.index = 0;
+		int bitsMod = this.bits % 8;
+		
+		if(bitsMod != 0) {
+			b[0] = b[this.bits / 8];
+			this.length = 1;
+			this.bits = bitsMod;
 		}
 		else {
-			b[0] = b[index];
-			this.length = 1;
-			this.bits %= 8;
-			this.index = 0;
+			this.length = 0;
+			this.bits = 0;
 		}
 	}
 }

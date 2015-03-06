@@ -20,32 +20,22 @@ public class EncoderOutputFormat<K, V> extends FileOutputFormat<K, V> {
 		}
 
 		@Override
-		public synchronized void write(K key, V value) throws IOException,
-				InterruptedException {
+		public synchronized void write(K key, V value) throws IOException, InterruptedException {
 			boolean test = value == null || value instanceof NullWritable;
-			if (!test) {
+			if (test == false) {
 				BytesWritableEncoder bw = (BytesWritableEncoder) value;
-				if(!bw.complete)
-					if (bw.index != bw.length)
-						out.write(bw.getBytes(), 0, bw.getLength() - 1);
-					else
-						out.write(bw.getBytes(), 0, bw.getLength());
-				else {
-					out.write(bw.getBytes(), 0, bw.getLength());
-				}
+				out.write(bw.b, 0, bw.length);
 			}
 		}
 
 		@Override
-		public synchronized void close(TaskAttemptContext context)
-				throws IOException, InterruptedException {
+		public synchronized void close(TaskAttemptContext context) throws IOException, InterruptedException {
 			out.close();
 		}
 	}
 
 	@Override
-	public RecordWriter<K, V> getRecordWriter(TaskAttemptContext job)
-			throws IOException, InterruptedException {
+	public RecordWriter<K, V> getRecordWriter(TaskAttemptContext job) throws IOException, InterruptedException {
 		String extension = new String();
 		Path file = getDefaultWorkFile(job, extension);
 		FileSystem fs = file.getFileSystem(job.getConfiguration());
