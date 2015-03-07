@@ -107,7 +107,11 @@ public class BytesWritableEncoder extends BinaryComparable implements WritableCo
 	}
 
 	public boolean addCode(Codification c) {
+//		
+		System.out.println(String.format("Tentando adicionar um código de %d bits", c.size));
 		if (this.b.length < this.length + (c.size / Defines.BYTE_BIT) + 1) {
+//			
+			System.out.println(String.format("Bytes writable está cheio! b.length: %d   length: %d"));
 			if(this.setCapacity(b.length * 3/2) == false) {
 				return false;
 			}
