@@ -12,25 +12,18 @@ import br.ufrj.ppgi.huffmanmapreduce.Codification;
 import br.ufrj.ppgi.huffmanmapreduce.Defines;
 
 public class BytesWritableEncoder extends BinaryComparable implements WritableComparable<BinaryComparable> {
-	private static final byte[] EMPTY_BYTES = {};
 
 	public int length, bits;
 	public byte[] b;
-	public boolean complete = false;
 
 	public BytesWritableEncoder() {
-		this(EMPTY_BYTES, 0, 0);
+		this(Defines.writeBufferSize);
 	}
 
 	public BytesWritableEncoder(int capacity) {
-		this(EMPTY_BYTES, 0, 0);
-		this.setCapacity(capacity);
-	}
-
-	public BytesWritableEncoder(byte[] b, int bytes, int bits) {
-		this.b = b;
-		this.length = bytes;
-		this.bits = bits;
+		this.b = new byte[capacity];
+		this.length = 0;
+		this.bits = 0;
 	}
 	
 	@Override
@@ -43,37 +36,10 @@ public class BytesWritableEncoder extends BinaryComparable implements WritableCo
 		return length;
 	}
 
-	public void setSize(int size) {
-		if (size > b.length) {
-			setCapacity(size * 3 / 2);
-		}
-		this.length = size;
-	}
-
-	public boolean setCapacity(int new_cap) {
-		// ERRO ALOCANDO 69175754
-		if (new_cap > 67108864) {
-			return false;
-		}
-		else if (new_cap > b.length) {
-			byte[] new_data = null;
-			try {
-				new_data = new byte[new_cap];
-			} catch (Exception e) {
-				System.out.println("BytesWritableHuffman.setCapacity()\n-----------\nNew size error: " + new_cap);
-				e.printStackTrace();
-			}
-			System.arraycopy(this.b, 0, new_data, 0, this.length);
-			this.b = new_data;
-		}
-		
-		return true;
-	}
-
 	@Override
 	public void readFields(DataInput in) throws IOException {
-		setSize(0);
-		setSize(in.readInt());
+		this.length = in.readInt();
+		this.b = new byte[length];
 		this.bits = in.readInt();
 		in.readFully(b, 0, length);
 	}
@@ -92,8 +58,10 @@ public class BytesWritableEncoder extends BinaryComparable implements WritableCo
 
 	@Override
 	public boolean equals(Object right_obj) {
-		if (right_obj instanceof BytesWritableEncoder)
+		if (right_obj instanceof BytesWritableEncoder) {
 			return super.equals(right_obj);
+		}
+		
 		return false;
 	}
 
@@ -109,8 +77,24 @@ public class BytesWritableEncoder extends BinaryComparable implements WritableCo
 		s += "--> bits: " + this.bits + "(" + this.length + " bytes)";
 		return s;
 	}
+	
+	public boolean setCapacity(int new_cap) {
+		byte[] new_data = null;
+		try {
+			new_data = new byte[new_cap];
+		}
+		catch (Error e) {
+			System.out.println("Erro alocando BytesWritableEncoder de " + new_cap + " bytes. Máximo obtido: " + b.length + " bytes");
+			return false;
+		}
+		
+		System.arraycopy(this.b, 0, new_data, 0, this.length);
+		this.b = new_data;
+		
+		return true;
+	}
 
-	public void addBit(boolean s) {
+	private void addBit(boolean s) {
 		BitUtility.setBit(this.b, this.bits, s);
 
 		if (++this.bits % 8 == 1) {
@@ -122,24 +106,12 @@ public class BytesWritableEncoder extends BinaryComparable implements WritableCo
 		return BitUtility.checkBit(this.b, pos);
 	}
 
-	public boolean addBytesWritable(BytesWritableEncoder bw) {
-		if (this.b.length < this.length + bw.length) {
-			if (!this.setCapacity(this.length + bw.length)) {
+	public boolean addCode(Codification c) {
+		if (this.b.length < this.length + (c.size / Defines.BYTE_BIT) + 1) {
+			if(this.setCapacity(b.length * 3/2) == false) {
 				return false;
 			}
 		}
-		
-		for (int i = 0; i < bw.bits ; i++) {
-			this.addBit(bw.getBit(i));
-		}
-		
-		return true;
-	}
-
-	public boolean addCode(Codification c) {
-		if (this.b.length < this.length + (c.size / Defines.BYTE_BIT) + 1)
-			if(!this.setCapacity(this.length + (c.size / Defines.BYTE_BIT) + 1))
-				return false;
 				
 		for (short i = 0; i < c.size; i++) {
 			if (c.code[i] == 0) {
