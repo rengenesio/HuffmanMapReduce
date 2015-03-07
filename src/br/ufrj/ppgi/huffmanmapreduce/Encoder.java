@@ -54,7 +54,7 @@ public class Encoder {
 			}
 		}
 		
-		frequency[Defines.EOF] = 1;
+		frequency[0] = 1;
 		symbols++;
 		
 		/*
