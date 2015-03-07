@@ -43,8 +43,8 @@ public class EncoderMap extends
 			for (short j = 0; j < this.codificationArray.length; j++) {
 				if (codificationArray[j].symbol == value.getBytes()[i]) {
 					if(buffer.addCode(codificationArray[j]) == false) {
-						System.out.println(String.format("Não consegui alocar ao ler a chave: %ld", this.key.get()));
-						//context.write(this.key, buffer);
+						//System.out.println(String.format("Não consegui alocar ao ler a chave: %ld", this.key.get()));
+						context.write(this.key, buffer);
 						//this.key.set(this.key.get() + this.inc_key);
 						buffer.clean();
 						buffer.addCode(codificationArray[j]);
