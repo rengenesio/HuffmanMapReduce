@@ -59,6 +59,10 @@ public class EncoderMap extends
 			Mapper<LongWritable, BytesWritable, LongWritable, BytesWritableEncoder>.Context context)
 			throws IOException, InterruptedException {
 		super.cleanup(context);
+		
+		if(buffer.length != 0)	{
+			context.write(this.key, buffer);
+		}
 	}
 	
 	
