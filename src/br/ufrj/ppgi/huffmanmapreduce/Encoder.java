@@ -36,7 +36,7 @@ public class Encoder {
 		treeToCode();
 		codificationToHDFS(fileName);
 		// MAPREDUCE SYMBOL ENCODER
-		//ToolRunner.run(new Configuration(), new EncoderConfiguration(), s);
+		ToolRunner.run(new Configuration(), new EncoderConfiguration(), s);
 		// END MAPREDUCE SYMBOL ENCODER
 	}
 	
@@ -77,9 +77,9 @@ public class Encoder {
 			if (frequency[i] > 0)
 				nodeArray.insert(new Node((byte) i, frequency[i]));
 		
-		///*
+		/*
 		System.out.println(nodeArray.toString());
-		//*/
+		*/
 	}
 
 	public void huffmanEncode() {
