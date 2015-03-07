@@ -110,23 +110,29 @@ public class DecoderSequential {
 						codificationArrayIndex += 1;
 					else
 						codificationArrayIndex += 2;
-	System.out.println(String.format("Número de bytes que já li: %d", totalReadBytes));
-	System.out.println(String.format("Estou neste byte: %d", totalReadBytes + j/8));
-					if (codificationArrayElementUsed[codificationArrayIndex]) {
-						if (codificationArrayElementSymbol[codificationArrayIndex] != 0) {
-							bufferOutput[bufferOutputIndex++] = codificationArrayElementSymbol[codificationArrayIndex];
-							if(bufferOutputIndex >= Defines.writeBufferSize) {
-								outputStream.write(bufferOutput, 0, bufferOutputIndex);
-								bufferOutputIndex = 0;
+	
+					try {
+						if (codificationArrayElementUsed[codificationArrayIndex]) {
+							if (codificationArrayElementSymbol[codificationArrayIndex] != 0) {
+								bufferOutput[bufferOutputIndex++] = codificationArrayElementSymbol[codificationArrayIndex];
+								if(bufferOutputIndex >= Defines.writeBufferSize) {
+									outputStream.write(bufferOutput, 0, bufferOutputIndex);
+									bufferOutputIndex = 0;
+								}
+								codificationArrayIndex = 0;
+							} else {
+								if(bufferOutputIndex > 0) {
+									outputStream.write(bufferOutput, 0, bufferOutputIndex);
+								}
+								inputStream.close();
 							}
-							codificationArrayIndex = 0;
-						} else {
-							if(bufferOutputIndex > 0) {
-								outputStream.write(bufferOutput, 0, bufferOutputIndex);
-							}
-							inputStream.close();
 						}
+					} catch(Exception ex) {
+						System.out.println(String.format("Número de bytes que já li: %d", totalReadBytes));
+						System.out.println(String.format("Estou neste byte: %d", totalReadBytes + j/8));
+						return;
 					}
+					
 				}
 			} while (readBytes > 0);
 		}
