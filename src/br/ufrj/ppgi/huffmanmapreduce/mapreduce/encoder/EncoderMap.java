@@ -59,7 +59,6 @@ public class EncoderMap extends
 	protected void cleanup(
 			Mapper<LongWritable, BytesWritable, LongWritable, BytesWritableEncoder>.Context context)
 			throws IOException, InterruptedException {
-		super.cleanup(context);
 		
 		for (short i = 0; i < this.codificationArray.length; i++) {
 			if (codificationArray[i].symbol == 0) {
@@ -76,6 +75,8 @@ public class EncoderMap extends
 		if(buffer.length != 0)	{
 			context.write(this.key, buffer);
 		}
+		
+		super.cleanup(context);
 	}
 	
 	
