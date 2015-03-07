@@ -57,7 +57,7 @@ public class Encoder {
 		frequency[Defines.EOF] = 1;
 		symbols++;
 		
-		
+		/*
 		System.out.println("FREQUENCY: symbol (frequency)");
 		int sum = 0;
 		for (int i = 0; i < frequency.length; i++)
@@ -67,7 +67,7 @@ public class Encoder {
 			}
 		System.out.println("\nTotal: " + sum);
 		System.out.println("------------------------------");
-		
+		*/
 	}
 	
 	public void frequencyToNodeArray() {
@@ -77,9 +77,9 @@ public class Encoder {
 			if (frequency[i] > 0)
 				nodeArray.insert(new Node((byte) i, frequency[i]));
 		
-		/*
+		///*
 		System.out.println(nodeArray.toString());
-		*/
+		//*/
 	}
 
 	public void huffmanEncode() {
