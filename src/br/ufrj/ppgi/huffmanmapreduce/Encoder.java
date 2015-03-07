@@ -77,9 +77,9 @@ public class Encoder {
 			if (frequency[i] > 0)
 				nodeArray.insert(new Node((byte) i, frequency[i]));
 		
-		/*
+		///*
 		System.out.println(nodeArray.toString());
-		*/
+		//*/
 	}
 
 	public void huffmanEncode() {

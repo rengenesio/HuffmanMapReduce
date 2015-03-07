@@ -45,7 +45,7 @@ public class EncoderMap extends
 					if(buffer.addCode(codificationArray[j]) == false) {
 						//System.out.println(String.format("Não consegui alocar ao ler a chave: %ld", this.key.get()));
 						context.write(this.key, buffer);
-						//this.key.set(this.key.get() + this.inc_key);
+						this.key.set(this.key.get() + this.inc_key);
 						buffer.clean();
 						buffer.addCode(codificationArray[j]);
 					}
@@ -60,6 +60,18 @@ public class EncoderMap extends
 			Mapper<LongWritable, BytesWritable, LongWritable, BytesWritableEncoder>.Context context)
 			throws IOException, InterruptedException {
 		super.cleanup(context);
+		
+//		for (short i = 0; i < this.codificationArray.length; i++) {
+//			if (codificationArray[i].symbol == 0) {
+//				if(buffer.addCode(codificationArray[i]) == false) {
+//					context.write(this.key, buffer);
+//					//this.key.set(this.key.get() + this.inc_key);
+//					buffer.clean();
+//					buffer.addCode(codificationArray[j]);
+//				}
+//				break;
+//			}
+//		}
 		
 		if(buffer.length != 0)	{
 			context.write(this.key, buffer);
