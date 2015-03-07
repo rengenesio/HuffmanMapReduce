@@ -110,7 +110,8 @@ public class DecoderSequential {
 						codificationArrayIndex += 1;
 					else
 						codificationArrayIndex += 2;
-	
+	System.out.println(String.format("Número de bytes que já li: ", totalReadBytes));
+	System.out.println(String.format("Estou neste byte: ", totalReadBytes + j/8));
 					if (codificationArrayElementUsed[codificationArrayIndex]) {
 						if (codificationArrayElementSymbol[codificationArrayIndex] != 0) {
 							bufferOutput[bufferOutputIndex++] = codificationArrayElementSymbol[codificationArrayIndex];
