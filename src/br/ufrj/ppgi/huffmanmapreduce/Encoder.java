@@ -36,7 +36,7 @@ public class Encoder {
 		treeToCode();
 		codificationToHDFS(fileName);
 		// MAPREDUCE SYMBOL ENCODER
-		ToolRunner.run(new Configuration(), new EncoderConfiguration(), s);
+		//ToolRunner.run(new Configuration(), new EncoderConfiguration(), s);
 		// END MAPREDUCE SYMBOL ENCODER
 	}
 	
@@ -57,7 +57,7 @@ public class Encoder {
 		frequency[Defines.EOF] = 1;
 		symbols++;
 		
-		/*
+		
 		System.out.println("FREQUENCY: symbol (frequency)");
 		int sum = 0;
 		for (int i = 0; i < frequency.length; i++)
@@ -67,7 +67,7 @@ public class Encoder {
 			}
 		System.out.println("\nTotal: " + sum);
 		System.out.println("------------------------------");
-		*/
+		
 	}
 	
 	public void frequencyToNodeArray() {

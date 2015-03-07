@@ -39,7 +39,7 @@ public class EncoderOutputFormat<K, V> extends FileOutputFormat<K, V> {
 		String extension = new String();
 		Path file = getDefaultWorkFile(job, extension);
 		FileSystem fs = file.getFileSystem(job.getConfiguration());
-		FSDataOutputStream file_out = fs.create(file);
-		return new EncoderRecordWriter<K, V>(file_out);
+		FSDataOutputStream outputStream = fs.create(file);
+		return new EncoderRecordWriter<K, V>(outputStream);
 	}
 }
