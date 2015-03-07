@@ -16,10 +16,10 @@ import org.apache.hadoop.mapreduce.lib.input.SplitLineReader;
 
 public class BlockRecordReader extends
 		RecordReader<LongWritable, BytesWritable> {
- 
+	//public static final String MAX_LINE_LENGTH = "mapreduce.input.linerecordreader.line.maxlength";
+
 	private long start;
 	private long length;
-	private long bufferLength;
 	private long pos;
 	private long end;
 	private SplitLineReader in;
@@ -41,7 +41,6 @@ public class BlockRecordReader extends
 
 		this.start = split.getStart();
 		this.length = split.getLength();
-		this.bufferLength = this.length;
 		this.end = this.start + this.length;
 		this.pos = start;
 
@@ -61,23 +60,24 @@ public class BlockRecordReader extends
 	public boolean nextKeyValue() throws IOException {
 		byte[] b = null;
 		int bytes;
+		long new_length = this.length;
 
-		if (bufferLength <= 0)
+		if (new_length <= 0)
 			return false;
 
 		boolean alloc_ok = false;
 		while (!alloc_ok) {
 			try {
-				b = new byte[(int) bufferLength];
+				b = new byte[(int) new_length];
 			} catch (OutOfMemoryError e) {
-				bufferLength /= 2;
+				new_length /= 2;
 				continue;
 			}
 			alloc_ok = true;
 		}
 
 		fileIn.seek(this.pos);
-		bytes = fileIn.read(b, 0, (int) bufferLength);
+		bytes = fileIn.read(b, 0, (int) new_length);
 		this.length -= bytes;
 
 		this.key.set(this.pos);
