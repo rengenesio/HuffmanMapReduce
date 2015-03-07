@@ -61,17 +61,17 @@ public class EncoderMap extends
 			throws IOException, InterruptedException {
 		super.cleanup(context);
 		
-//		for (short i = 0; i < this.codificationArray.length; i++) {
-//			if (codificationArray[i].symbol == 0) {
-//				if(buffer.addCode(codificationArray[i]) == false) {
-//					context.write(this.key, buffer);
-//					//this.key.set(this.key.get() + this.inc_key);
-//					buffer.clean();
-//					buffer.addCode(codificationArray[j]);
-//				}
-//				break;
-//			}
-//		}
+		for (short i = 0; i < this.codificationArray.length; i++) {
+			if (codificationArray[i].symbol == 0) {
+				if(buffer.addCode(codificationArray[i]) == false) {
+					context.write(this.key, buffer);
+					this.key.set(this.key.get() + this.inc_key);
+					buffer.clean();
+					buffer.addCode(codificationArray[i]);
+				}
+				break;
+			}
+		}
 		
 		if(buffer.length != 0)	{
 			context.write(this.key, buffer);
