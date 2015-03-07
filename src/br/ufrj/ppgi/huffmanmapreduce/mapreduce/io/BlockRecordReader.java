@@ -16,7 +16,6 @@ import org.apache.hadoop.mapreduce.lib.input.SplitLineReader;
 
 public class BlockRecordReader extends
 		RecordReader<LongWritable, BytesWritable> {
-	//public static final String MAX_LINE_LENGTH = "mapreduce.input.linerecordreader.line.maxlength";
 
 	private long start;
 	private long length;
@@ -27,9 +26,10 @@ public class BlockRecordReader extends
 	private LongWritable key;
 	private BytesWritable value;
 
-	public BlockRecordReader() {
-	}
+	
+	public BlockRecordReader() { }
 
+	
 	@Override
 	public void initialize(InputSplit genericSplit, TaskAttemptContext context)
 			throws IOException, InterruptedException {
@@ -50,10 +50,6 @@ public class BlockRecordReader extends
 
 		this.key = new LongWritable();
 		this.value = new BytesWritable();
-	}
-
-	private long getFilePosition() throws IOException {
-		return pos;
 	}
 
 	@Override
@@ -109,5 +105,8 @@ public class BlockRecordReader extends
 		if (in != null)
 			in.close();
 	}
-
+	
+	private long getFilePosition() throws IOException {
+		return pos;
+	}
 }
