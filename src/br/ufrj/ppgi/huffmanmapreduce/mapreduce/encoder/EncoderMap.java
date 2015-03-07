@@ -38,11 +38,12 @@ public class EncoderMap extends
 	public void map(LongWritable key, BytesWritable value, Context context)
 			throws IOException, InterruptedException {
 		int valueLengthInBytes = value.getLength();
+		System.out.println(String.format("Value length: %d", value.getLength()));
 		for (int i = 0 ; i < valueLengthInBytes ; i++) {
 			for (short j = 0; j < this.codificationArray.length; j++) {
 				if (codificationArray[j].symbol == value.getBytes()[i]) {
 					if(buffer.addCode(codificationArray[j]) == false) {
-						System.out.println(this.key.get());
+						//System.out.println(this.key.get());
 						//context.write(this.key, buffer);
 						this.key.set(this.key.get() + this.inc_key);
 						buffer.clean();
