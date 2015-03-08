@@ -92,11 +92,11 @@ public class DecoderMap extends
 
 		this.codificationArray = SerializationUtility.deserializeCodificationArray(byteArray);
 		
-		/*
+		///*
 		System.out.println("CODIFICATION: symbol (size) code"); 
-		for(short i = 0 ; i < symbols ; i++)
+		for(short i = 0 ; i < this.codificationArray.length ; i++)
 			System.out.println(codificationArray[i].toString());
-		*/
+		//*/
 	}
 
 	public void codeToTreeArray() {
