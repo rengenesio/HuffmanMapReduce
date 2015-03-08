@@ -92,11 +92,11 @@ public class DecoderMap extends
 
 		this.codificationArray = SerializationUtility.deserializeCodificationArray(byteArray);
 		
-		///*
+		/*
 		System.out.println("CODIFICATION: symbol (size) code"); 
 		for(short i = 0 ; i < this.codificationArray.length ; i++)
 			System.out.println(codificationArray[i].toString());
-		//*/
+		*/
 	}
 
 	public void codeToTreeArray() {
@@ -120,13 +120,13 @@ public class DecoderMap extends
 			codificationArrayElementUsed[index] = true;
 		}
 
-		/*
+		///*
 		System.out.println("codeToTreeArray():");
 		System.out.println("TREE_ARRAY:"); 
 		for(int i = 0 ; i < Math.pow(2,(max_code + 1)) ; i++) 
 			if(codificationArrayElementUsed[i])
 				System.out.println("i: " + i + " -> " + codificationArrayElementSymbol[i]);
 		System.out.println("------------------------------");
-		*/
+		//*/
 	}
 }
