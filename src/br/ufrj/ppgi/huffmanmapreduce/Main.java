@@ -55,7 +55,7 @@ public class Main {
 			long totalTime, startTime, endTime;
 			
 			try {
-				fs.delete(new Path(fileName + Defines.pathSuffix + "sequentialdecompressed"), true);
+				fs.delete(new Path(fileName + Defines.pathSuffix + Defines.decompressedPath), true);
 			} catch(Exception ex) { }
 			
 			startTime = System.nanoTime();
