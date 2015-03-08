@@ -42,9 +42,17 @@ public class DecoderMap extends
 	public void map(LongWritable key, BytesWritableEncoder value, Context context)
 			throws IOException, InterruptedException {
 		
+		try {
+			System.out.println("Value: " + value);
+		} catch(Exception exception) {
+			System.out.println("Exception: " + exception.toString());
+		} catch(Error error) {
+			System.out.println("Error: " + error.toString());
+		}
+		
 		byte[] compressedByteArray = value.b;
 		int compressedBytesLengthInBits = value.bits;
-		System.out.println("Value: " + value);
+		
 		for (int i = 0; i < compressedBytesLengthInBits ; i++) {
 			codificationArrayIndex <<= 1;
 			if (BitUtility.checkBit(compressedByteArray, i) == false) {
