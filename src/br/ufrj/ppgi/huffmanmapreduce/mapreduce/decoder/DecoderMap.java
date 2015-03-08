@@ -44,6 +44,7 @@ public class DecoderMap extends
 		
 		byte[] compressedByteArray = value.b;
 		int compressedBytesLengthInBits = value.bits;
+		System.out.println("Value: " + value);
 		for (int i = 0; i < compressedBytesLengthInBits ; i++) {
 			codificationArrayIndex <<= 1;
 			if (BitUtility.checkBit(compressedByteArray, i) == false) {
@@ -52,6 +53,8 @@ public class DecoderMap extends
 			else {
 				codificationArrayIndex += 2;
 			}
+			
+			System.out.println("CodificationArrayIndex: " + codificationArrayIndex);
 
 			if (codificationArrayElementUsed[codificationArrayIndex]) {
 				if (codificationArrayElementSymbol[codificationArrayIndex] != 0) {
@@ -62,11 +65,12 @@ public class DecoderMap extends
 						
 						bufferOutput.addSymbol(codificationArrayElementSymbol[codificationArrayIndex]);
 					}
-					codificationArrayIndex = 0;
 				}
 				else {
 					return;
 				}
+				
+				codificationArrayIndex = 0;
 			}
 		}
 	}
