@@ -59,10 +59,13 @@ public class DecoderMap extends
 			if (codificationArrayElementUsed[codificationArrayIndex]) {
 				if (codificationArrayElementSymbol[codificationArrayIndex] != 0) {
 					if(bufferOutput.addSymbol(codificationArrayElementSymbol[codificationArrayIndex]) == false) {
+						System.out.println("Vou tentar escrever...");
 						context.write(this.key, bufferOutput);
+						System.out.println("Escrevi!");
 						bufferOutput.clean();
-						
+						System.out.println("Limpei!");
 						bufferOutput.addSymbol(codificationArrayElementSymbol[codificationArrayIndex]);
+						System.out.println("Adicionei!");
 					}
 				}
 				else {
