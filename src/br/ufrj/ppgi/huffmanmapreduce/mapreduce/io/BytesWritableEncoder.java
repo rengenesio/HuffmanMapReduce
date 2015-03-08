@@ -14,6 +14,7 @@ import br.ufrj.ppgi.huffmanmapreduce.Defines;
 public class BytesWritableEncoder extends BinaryComparable implements WritableComparable<BinaryComparable> {
 
 	public int length, bits;
+	public int index;
 	public byte[] b;
 
 	public BytesWritableEncoder() {
@@ -24,6 +25,7 @@ public class BytesWritableEncoder extends BinaryComparable implements WritableCo
 		this.b = new byte[capacity];
 		this.length = 0;
 		this.bits = 0;
+		this.index = 0;
 	}
 	
 	@Override
@@ -97,7 +99,7 @@ public class BytesWritableEncoder extends BinaryComparable implements WritableCo
 	private void addBit(boolean s) {
 		BitUtility.setBit(this.b, this.bits, s);
 
-		if (++this.bits % 8 == 1) {
+		if (++this.bits % Defines.bitsInByte == 1) {
 			this.length++;
 		}
 	}
@@ -107,11 +109,7 @@ public class BytesWritableEncoder extends BinaryComparable implements WritableCo
 	}
 
 	public boolean addCode(Codification c) {
-//		
-//		System.out.println(String.format("Tentando adicionar um código de %d bits", c.size));
 		if (this.b.length < this.length + (c.size / Defines.bitsInByte) + 1) {
-//			
-//			System.out.println(String.format("Bytes writable está cheio! b.length: %d   length: %d"));
 			if(this.setCapacity(b.length * 3/2) == false) {
 				return false;
 			}
@@ -129,17 +127,31 @@ public class BytesWritableEncoder extends BinaryComparable implements WritableCo
 		return true;
 	}
 	
+	public boolean addSymbol(byte symbol) {
+		if(this.index < b.length) {
+			this.b[index] = symbol;
+			
+			this.index++;
+			this.length++;
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
 	public void clean() {
-		int bitsMod = this.bits % 8;
+		int bitsMod = this.bits % Defines.bitsInByte;
 		
 		if(bitsMod != 0) {
-			b[0] = b[this.bits / 8];
+			b[0] = b[this.bits / Defines.bitsInByte];
 			this.length = 1;
 			this.bits = bitsMod;
 		}
 		else {
 			this.length = 0;
 			this.bits = 0;
+			this.index = 0;
 		}
 	}
 }

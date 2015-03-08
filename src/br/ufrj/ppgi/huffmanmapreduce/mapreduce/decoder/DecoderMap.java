@@ -8,85 +8,80 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
 import br.ufrj.ppgi.huffmanmapreduce.BitUtility;
 import br.ufrj.ppgi.huffmanmapreduce.Codification;
 import br.ufrj.ppgi.huffmanmapreduce.Defines;
 import br.ufrj.ppgi.huffmanmapreduce.SerializationUtility;
+import br.ufrj.ppgi.huffmanmapreduce.mapreduce.io.BytesWritableEncoder;
 
 public class DecoderMap extends
-		Mapper<LongWritable, BytesWritable, LongWritable, Text> {
+		Mapper<LongWritable, BytesWritable, LongWritable, BytesWritableEncoder> {
 
-	LongWritable key;
-	int inc_key;
-	boolean key_set;
-	
-	short symbols = 0;
 	Codification[] codificationArray = new Codification[Defines.twoPowerBitsCodification];
+	BytesWritableEncoder bufferOutput = new BytesWritableEncoder(Defines.writeBufferSize*1000);
+	LongWritable key = new LongWritable(0);
+	
 	
 	byte max_code = 0;
 	byte[] codificationArrayElementSymbol;
 	boolean[] codificationArrayElementUsed;
 	
-	int lastCodificationArrayIndex = 0;
+	int codificationArrayIndex = 0;
 	
 	@Override
-	protected void setup(Mapper<LongWritable, BytesWritable, LongWritable, Text>.Context context) throws IOException, InterruptedException {
+	protected void setup(Mapper<LongWritable, BytesWritable, LongWritable, BytesWritableEncoder>.Context context) throws IOException, InterruptedException {
 		super.setup(context);
 		
 		fileToCodification(context.getConfiguration());
 		codeToTreeArray();
-		
-		this.key = new LongWritable(context.getTaskAttemptID().getTaskID().getId() * 256000000);
 	}
 	
 
-	public void map(LongWritable key, BytesWritable value, Context context)
+	public void map(LongWritable key, BytesWritableEncoder value, Context context)
 			throws IOException, InterruptedException {
 		
-		byte[] bufferOutput = new byte[Defines.writeBufferSize];
-		int bufferOutputIndex = 0;
-		
-		byte[] compressedByteArray = value.getBytes();
-		int compressedBytesLengthInBits = value.getLength() * 8;
-		int codificationArrayIndex = lastCodificationArrayIndex;
+		byte[] compressedByteArray = value.b;
+		int compressedBytesLengthInBits = value.bits;
 		for (int i = 0; i < compressedBytesLengthInBits ; i++) {
 			codificationArrayIndex <<= 1;
-			if (BitUtility.checkBit(compressedByteArray, i) == false)
+			if (BitUtility.checkBit(compressedByteArray, i) == false) {
 				codificationArrayIndex += 1;
-			else
+			}
+			else {
 				codificationArrayIndex += 2;
+			}
 
 			if (codificationArrayElementUsed[codificationArrayIndex]) {
 				if (codificationArrayElementSymbol[codificationArrayIndex] != 0) {
-					bufferOutput[bufferOutputIndex++] = codificationArrayElementSymbol[codificationArrayIndex];
-					
-					if(bufferOutputIndex >= Defines.writeBufferSize) {
-						context.write(this.key, new Text(bufferOutput));
-						this.key.set(this.key.get() + 1);
-						bufferOutputIndex = 0;
+					if(bufferOutput.addSymbol(codificationArrayElementSymbol[codificationArrayIndex]) == false) {
+						context.write(this.key, bufferOutput);
+						bufferOutput.clean();
+						
+						bufferOutput.addSymbol(codificationArrayElementSymbol[codificationArrayIndex]);
 					}
 					codificationArrayIndex = 0;
-				} else {
-					if(bufferOutputIndex > 0) {
-						context.write(this.key, new Text(bufferOutput));
-					}
-
+				}
+				else {
 					return;
 				}
 			}
 		}
-		
-		if(bufferOutputIndex > 0) {
-			context.write(this.key, new Text(bufferOutput));
-		}
-		
-		this.lastCodificationArrayIndex = codificationArrayIndex;
 	}
 	
-
+	@Override
+	protected void cleanup(
+			Mapper<LongWritable, BytesWritable, LongWritable, BytesWritableEncoder>.Context context)
+			throws IOException, InterruptedException {
+		
+		if(this.bufferOutput.length > 0) {
+			context.write(this.key, bufferOutput);
+		}
+		
+		super.cleanup(context);
+	}
+	
 	
 	public void fileToCodification(Configuration configuration) throws IOException {
 		FileSystem fileSystem = FileSystem.get(configuration);
@@ -134,5 +129,4 @@ public class DecoderMap extends
 		System.out.println("------------------------------");
 		*/
 	}
-	
 }

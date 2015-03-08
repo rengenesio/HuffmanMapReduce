@@ -19,8 +19,6 @@ public class EncoderMap extends
 		Mapper<LongWritable, BytesWritable, LongWritable, BytesWritableEncoder> {
 
 	LongWritable key = new LongWritable(0);
-	//int inc_key;
-	
 	Codification[] codificationArray = new Codification[Defines.twoPowerBitsCodification];
 	BytesWritableEncoder buffer = new BytesWritableEncoder(Defines.writeBufferSize*1000);
 
@@ -30,8 +28,6 @@ public class EncoderMap extends
 			throws IOException, InterruptedException {
 		super.setup(context);
 		
-		//this.key = new LongWritable(context.getTaskAttemptID().getTaskID().getId() * 134217728);
-		//this.inc_key = 1;
 		fileToCodification(context.getConfiguration());
 	}
 
@@ -42,9 +38,7 @@ public class EncoderMap extends
 			for (short j = 0; j < this.codificationArray.length; j++) {
 				if (value.getBytes()[i] == codificationArray[j].symbol) {
 					if(buffer.addCode(codificationArray[j]) == false) {
-						//context.write(this.key, buffer);
 						context.write(this.key, buffer);
-						//this.key.set(this.key.get() + this.inc_key);
 						buffer.clean();
 						buffer.addCode(codificationArray[j]);
 					}
@@ -63,9 +57,7 @@ public class EncoderMap extends
 		for (short i = 0; i < this.codificationArray.length; i++) {
 			if (codificationArray[i].symbol == 0) {
 				if(buffer.addCode(codificationArray[i]) == false) {
-					//context.write(this.key, buffer);
 					context.write(this.key, buffer);
-					//this.key.set(this.key.get() + this.inc_key);
 					buffer.clean();
 					buffer.addCode(codificationArray[i]);
 				}
@@ -74,7 +66,6 @@ public class EncoderMap extends
 		}
 		
 		if(buffer.length != 0)	{
-			//context.write(this.key, buffer);
 			context.write(this.key, buffer);
 		}
 		

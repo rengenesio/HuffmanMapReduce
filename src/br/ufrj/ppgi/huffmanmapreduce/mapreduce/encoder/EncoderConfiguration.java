@@ -22,13 +22,12 @@ public class EncoderConfiguration extends Configured implements Tool {
 		
 		// Parse args
 		String fileName = args[0];
-		//int numReduces = Integer.parseInt(args[1]);
 		
 		// Configuration to be accessed by map classes
 		conf.set("fileName", fileName);
 
 		// Create job
-		Job job = Job.getInstance(conf, "HuffmanEncoder");
+		Job job = Job.getInstance(conf, "HuffmanEncoderMR");
 		job.setJarByClass(EncoderConfiguration.class);
 
 		// Setup MapReduce job
