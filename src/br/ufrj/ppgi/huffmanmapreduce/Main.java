@@ -58,9 +58,9 @@ public class Main {
 			} catch(Exception ex) { }
 			
 			startTime = System.nanoTime();
-			DecoderMapReduce decoderMapReduce = new DecoderMapReduce(fileName);
-			decoderMapReduce.Decode();
+			new DecoderMapReduce(fileName);
 			endTime = System.nanoTime();
+			
 			System.out.println("Descompressão completa!");
 				
 			totalTime = endTime - startTime;
