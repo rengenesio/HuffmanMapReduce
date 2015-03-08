@@ -6,7 +6,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Mapper;
 
@@ -17,7 +16,7 @@ import br.ufrj.ppgi.huffmanmapreduce.SerializationUtility;
 import br.ufrj.ppgi.huffmanmapreduce.mapreduce.io.BytesWritableEncoder;
 
 public class DecoderMap extends
-		Mapper<LongWritable, BytesWritable, LongWritable, BytesWritableEncoder> {
+		Mapper<LongWritable, BytesWritableEncoder, LongWritable, BytesWritableEncoder> {
 
 	Codification[] codificationArray = new Codification[Defines.twoPowerBitsCodification];
 	BytesWritableEncoder bufferOutput = new BytesWritableEncoder(Defines.writeBufferSize*1000);
@@ -31,7 +30,7 @@ public class DecoderMap extends
 	int codificationArrayIndex = 0;
 	
 	@Override
-	protected void setup(Mapper<LongWritable, BytesWritable, LongWritable, BytesWritableEncoder>.Context context) throws IOException, InterruptedException {
+	protected void setup(Mapper<LongWritable, BytesWritableEncoder, LongWritable, BytesWritableEncoder>.Context context) throws IOException, InterruptedException {
 		super.setup(context);
 		
 		fileToCodification(context.getConfiguration());
@@ -85,7 +84,7 @@ public class DecoderMap extends
 	
 	@Override
 	protected void cleanup(
-			Mapper<LongWritable, BytesWritable, LongWritable, BytesWritableEncoder>.Context context)
+			Mapper<LongWritable, BytesWritableEncoder, LongWritable, BytesWritableEncoder>.Context context)
 			throws IOException, InterruptedException {
 		
 		if(this.bufferOutput.length > 0) {
