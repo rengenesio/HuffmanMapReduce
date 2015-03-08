@@ -6,6 +6,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Mapper;
 
@@ -16,7 +17,7 @@ import br.ufrj.ppgi.huffmanmapreduce.SerializationUtility;
 import br.ufrj.ppgi.huffmanmapreduce.mapreduce.io.BytesWritableEncoder;
 
 public class DecoderMap extends
-		Mapper<LongWritable, BytesWritableEncoder, LongWritable, BytesWritableEncoder> {
+		Mapper<LongWritable, BytesWritable, LongWritable, BytesWritableEncoder> {
 
 	Codification[] codificationArray = new Codification[Defines.twoPowerBitsCodification];
 	BytesWritableEncoder bufferOutput = new BytesWritableEncoder(Defines.writeBufferSize*1000);
@@ -30,7 +31,7 @@ public class DecoderMap extends
 	int codificationArrayIndex = 0;
 	
 	@Override
-	protected void setup(Mapper<LongWritable, BytesWritableEncoder, LongWritable, BytesWritableEncoder>.Context context) throws IOException, InterruptedException {
+	protected void setup(Mapper<LongWritable, BytesWritable, LongWritable, BytesWritableEncoder>.Context context) throws IOException, InterruptedException {
 		super.setup(context);
 		
 		fileToCodification(context.getConfiguration());
@@ -38,7 +39,7 @@ public class DecoderMap extends
 	}
 	
 
-	public void map(LongWritable key, BytesWritableEncoder value, Context context)
+	public void map(LongWritable key, BytesWritable value, Context context)
 			throws IOException, InterruptedException {
 		
 		try {
@@ -49,8 +50,10 @@ public class DecoderMap extends
 			System.out.println("Error: " + error.toString());
 		}
 		
-		byte[] compressedByteArray = value.b;
-		int compressedBytesLengthInBits = value.bits;
+		byte[] compressedByteArray = value.getBytes();
+		int compressedBytesLengthInBits = value.getLength() * 8;
+		
+		System.out.println("Length in bits: " + compressedBytesLengthInBits);
 		
 		for (int i = 0; i < compressedBytesLengthInBits ; i++) {
 			codificationArrayIndex <<= 1;
@@ -84,7 +87,7 @@ public class DecoderMap extends
 	
 	@Override
 	protected void cleanup(
-			Mapper<LongWritable, BytesWritableEncoder, LongWritable, BytesWritableEncoder>.Context context)
+			Mapper<LongWritable, BytesWritable, LongWritable, BytesWritableEncoder>.Context context)
 			throws IOException, InterruptedException {
 		
 		if(this.bufferOutput.length > 0) {
