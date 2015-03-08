@@ -24,7 +24,12 @@ public class EncoderOutputFormat<K, V> extends FileOutputFormat<K, V> {
 			boolean test = value == null || value instanceof NullWritable;
 			if (test == false) {
 				BytesWritableEncoder bw = (BytesWritableEncoder) value;
-				out.write(bw.b, 0, bw.length);
+				if(bw.bits % 8 != 0) {
+					out.write(bw.b, 0, bw.length - 1);
+				}
+				else {
+					out.write(bw.b, 0, bw.length);
+				}
 			}
 		}
 
