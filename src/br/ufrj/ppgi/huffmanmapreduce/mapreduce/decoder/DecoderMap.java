@@ -1,6 +1,7 @@
 package br.ufrj.ppgi.huffmanmapreduce.mapreduce.decoder;
 
 import java.io.IOException;
+import java.util.TreeMap;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
@@ -118,8 +119,6 @@ public class DecoderMap extends
 		for(short i = 0 ; i < this.codificationArray.length ; i++) {
 			this.max_code = (this.codificationArray[i].size > this.max_code) ? this.codificationArray[i].size : this.max_code;  
 		}
-		
-		System.out.println("MaxCode: " + max_code);
 		
 		codificationArrayElementSymbol = new byte[(int) Math.pow(2, (max_code + 1))];
 		codificationArrayElementUsed = new boolean[(int) Math.pow(2, (max_code + 1))];
