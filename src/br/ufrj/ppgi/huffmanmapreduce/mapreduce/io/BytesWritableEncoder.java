@@ -129,12 +129,24 @@ public class BytesWritableEncoder extends BinaryComparable implements WritableCo
 	
 	public boolean addSymbol(byte symbol) {
 		if(this.index < b.length) {
-			this.b[index] = symbol;
-			
-			this.index++;
-			this.length++;
-			
-			return true;
+			try {
+				this.b[index] = symbol;
+				
+				this.index++;
+				this.length++;
+				
+				return true;
+			} catch(Exception ex) {
+				System.out.println(ex.toString());
+				System.out.println(index);
+				System.out.println(length);
+				ex.printStackTrace();
+			} catch(Error error) {
+				System.out.println(error.toString());
+				System.out.println(index);
+				System.out.println(length);
+				error.printStackTrace();
+			}
 		}
 		
 		return false;
