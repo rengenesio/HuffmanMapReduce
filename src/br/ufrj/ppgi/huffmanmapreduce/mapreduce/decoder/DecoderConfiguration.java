@@ -26,7 +26,7 @@ public class DecoderConfiguration extends Configured implements Tool {
 		// Configuration to be accessed by map classes
 		conf.set("fileName", fileName);
 		System.out.println(conf.get("mapred.map.child.java.opts"));
-		conf.set("mapred.map.child.java.opts", "-Xmx768m");
+		conf.set("mapred.map.child.java.opts", "-Xmx1024m");
 		System.out.println(conf.get("mapred.map.child.java.opts"));
 		// Create job
 		Job job = Job.getInstance(conf, "HuffmanDecoderMR");
