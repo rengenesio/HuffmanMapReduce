@@ -42,7 +42,7 @@ public class Main {
 			} catch(Exception ex) { }
 				
 			startTime = System.nanoTime();
-			new Encoder(fileName);
+			new EncoderMapReduce(fileName);
 			endTime = System.nanoTime();
 			System.out.println("Compressão completa!");
 			
@@ -58,7 +58,8 @@ public class Main {
 			} catch(Exception ex) { }
 			
 			startTime = System.nanoTime();
-			new DecoderSequential(fileName + ".yarnmultithreadv2dir/" + Defines.compressedSplitsPath, fileName + Defines.pathSuffix + "sequentialdecompressed", fileName + Defines.pathSuffix + Defines.codificationFileName);
+			DecoderMapReduce decoderMapReduce = new DecoderMapReduce(fileName);
+			decoderMapReduce.Decode();
 			endTime = System.nanoTime();
 			System.out.println("Descompressão completa!");
 				
