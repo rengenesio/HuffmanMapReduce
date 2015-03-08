@@ -18,7 +18,7 @@ import br.ufrj.ppgi.huffmanmapreduce.mapreduce.io.BytesWritableEncoder;
 public class EncoderMap extends
 		Mapper<LongWritable, BytesWritable, LongWritable, BytesWritableEncoder> {
 
-	//LongWritable key;
+	LongWritable key = new LongWritable(0);
 	//int inc_key;
 	
 	Codification[] codificationArray = new Codification[Defines.twoPowerBitsCodification];
@@ -43,7 +43,7 @@ public class EncoderMap extends
 				if (value.getBytes()[i] == codificationArray[j].symbol) {
 					if(buffer.addCode(codificationArray[j]) == false) {
 						//context.write(this.key, buffer);
-						context.write(key, buffer);
+						context.write(this.key, buffer);
 						//this.key.set(this.key.get() + this.inc_key);
 						buffer.clean();
 						buffer.addCode(codificationArray[j]);
@@ -64,7 +64,7 @@ public class EncoderMap extends
 			if (codificationArray[i].symbol == 0) {
 				if(buffer.addCode(codificationArray[i]) == false) {
 					//context.write(this.key, buffer);
-					context.write(new LongWritable(0), buffer);
+					context.write(this.key, buffer);
 					//this.key.set(this.key.get() + this.inc_key);
 					buffer.clean();
 					buffer.addCode(codificationArray[i]);
@@ -75,7 +75,7 @@ public class EncoderMap extends
 		
 		if(buffer.length != 0)	{
 			//context.write(this.key, buffer);
-			context.write(new LongWritable(0), buffer);
+			context.write(this.key, buffer);
 		}
 		
 		super.cleanup(context);	
