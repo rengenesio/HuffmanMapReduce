@@ -55,34 +55,34 @@ public class DecoderMap extends
 		
 		System.out.println("Length in bits: " + compressedBytesLengthInBits);
 		
-		for (int i = 0; i < compressedBytesLengthInBits ; i++) {
-			codificationArrayIndex <<= 1;
-			if (BitUtility.checkBit(compressedByteArray, i) == false) {
-				codificationArrayIndex += 1;
-			}
-			else {
-				codificationArrayIndex += 2;
-			}
-			
-			System.out.println("CodificationArrayIndex: " + codificationArrayIndex);
-
-			if (codificationArrayElementUsed[codificationArrayIndex]) {
-				if (codificationArrayElementSymbol[codificationArrayIndex] != 0) {
-					if(bufferOutput.addSymbol(codificationArrayElementSymbol[codificationArrayIndex]) == false) {
-						System.out.println("Escrevendo!!!");
-						context.write(this.key, bufferOutput);
-						bufferOutput.clean();
-						
-						bufferOutput.addSymbol(codificationArrayElementSymbol[codificationArrayIndex]);
-					}
-				}
-				else {
-					return;
-				}
-				
-				codificationArrayIndex = 0;
-			}
-		}
+//		for (int i = 0; i < compressedBytesLengthInBits ; i++) {
+//			codificationArrayIndex <<= 1;
+//			if (BitUtility.checkBit(compressedByteArray, i) == false) {
+//				codificationArrayIndex += 1;
+//			}
+//			else {
+//				codificationArrayIndex += 2;
+//			}
+//			
+//			System.out.println("CodificationArrayIndex: " + codificationArrayIndex);
+//
+//			if (codificationArrayElementUsed[codificationArrayIndex]) {
+//				if (codificationArrayElementSymbol[codificationArrayIndex] != 0) {
+//					if(bufferOutput.addSymbol(codificationArrayElementSymbol[codificationArrayIndex]) == false) {
+//						System.out.println("Escrevendo!!!");
+//						context.write(this.key, bufferOutput);
+//						bufferOutput.clean();
+//						
+//						bufferOutput.addSymbol(codificationArrayElementSymbol[codificationArrayIndex]);
+//					}
+//				}
+//				else {
+//					return;
+//				}
+//				
+//				codificationArrayIndex = 0;
+//			}
+//		}
 	}
 	
 	@Override
