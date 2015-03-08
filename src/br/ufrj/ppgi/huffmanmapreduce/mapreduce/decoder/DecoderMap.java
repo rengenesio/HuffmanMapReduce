@@ -1,7 +1,6 @@
 package br.ufrj.ppgi.huffmanmapreduce.mapreduce.decoder;
 
 import java.io.IOException;
-import java.util.TreeMap;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
@@ -49,39 +48,26 @@ public class DecoderMap extends
 //		System.out.println("Length in bits: " + compressedBytesLengthInBits);
 		
 		for (int i = 0; i < compressedBytesLengthInBits ; i++) {
-			try {
-				codificationArrayIndex <<= 1;
-				if (BitUtility.checkBit(compressedByteArray, i) == false) {
-					codificationArrayIndex += 1;
+			if (BitUtility.checkBit(compressedByteArray, i) == false) {
+				codificationArrayIndex += 1;
+			}
+			else {
+				codificationArrayIndex += 2;
+			}
+			
+			if (codificationArrayElementUsed[codificationArrayIndex]) {
+				if (codificationArrayElementSymbol[codificationArrayIndex] != 0) {
+					if(bufferOutput.addSymbol(codificationArrayElementSymbol[codificationArrayIndex]) == false) {
+						context.write(this.key, bufferOutput);
+						bufferOutput.clean();
+						bufferOutput.addSymbol(codificationArrayElementSymbol[codificationArrayIndex]);
+					}
 				}
 				else {
-					codificationArrayIndex += 2;
+					return;
 				}
 				
-				if (codificationArrayElementUsed[codificationArrayIndex]) {
-					if (codificationArrayElementSymbol[codificationArrayIndex] != 0) {
-						if(bufferOutput.addSymbol(codificationArrayElementSymbol[codificationArrayIndex]) == false) {
-							System.out.println("Vou tentar escrever...");
-							context.write(this.key, bufferOutput);
-							System.out.println("Escrevi!");
-							bufferOutput.clean();
-							System.out.println("Limpei!");
-							bufferOutput.addSymbol(codificationArrayElementSymbol[codificationArrayIndex]);
-							System.out.println("Adicionei!");
-						}
-					}
-					else {
-						return;
-					}
-					
-					codificationArrayIndex = 0;
-				}
-			}
-			catch(Exception ex) {
-				System.out.println(codificationArrayIndex);
-				System.out.println("Exception: "+ ex.toString());
-				System.out.println(value.toString());
-				ex.printStackTrace();
+				codificationArrayIndex = 0;
 			}
 		}
 	}
