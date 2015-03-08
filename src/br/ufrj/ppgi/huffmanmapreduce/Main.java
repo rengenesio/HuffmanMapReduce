@@ -44,6 +44,7 @@ public class Main {
 			startTime = System.nanoTime();
 			new EncoderMapReduce(fileName);
 			endTime = System.nanoTime();
+			
 			System.out.println("Compressão completa!");
 			
 			totalTime = endTime - startTime;
