@@ -133,11 +133,11 @@ public class Encoder {
 			}
 		}
 
-		/*
+		///*
 		System.out.println("CODIFICATION: symbol (size) code"); 
 		for(short i = 0 ; i < symbols ; i++)
 			System.out.println(codification[i].toString());
-		*/
+		//*/
 	}
 
 	public void codificationToHDFS(String path_out) throws IOException {
@@ -145,10 +145,7 @@ public class Encoder {
 		FileSystem fs = FileSystem.get(new Configuration());
 		FSDataOutputStream f = fs.create(path);
 		
-		//for (short i = 0; i < symbols; i++)
-			
-			//f.write(codification[i].toByteArray(), 0, codification[i].toByteArray().length);
-			f.write(SerializationUtility.serializeCodificationArray(codification));
+		f.write(SerializationUtility.serializeCodificationArray(codification));
 		f.close();
 	}
 }
