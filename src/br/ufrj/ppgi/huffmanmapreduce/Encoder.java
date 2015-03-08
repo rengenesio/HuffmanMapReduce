@@ -21,11 +21,10 @@ public class Encoder {
 	NodeArray nodeArray;
 	Codification[] codificationArray;
 
-	public Encoder(String fileName, int numReduces)
+	public Encoder(String fileName)
 			throws Exception {
-		String[] s = new String[2];
+		String[] s = new String[1];
 		s[0] = fileName;
-		s[1] = Integer.toString(numReduces);
 		
 		// MAPREDUCE SYMBOL COUNT
 		ToolRunner.run(new Configuration(), new SymbolCountConfiguration(), s);

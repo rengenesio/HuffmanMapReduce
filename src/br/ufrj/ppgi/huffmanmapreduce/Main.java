@@ -8,14 +8,13 @@ import org.apache.hadoop.fs.Path;
 public class Main {
 
 	public static void main(String[] args) throws Exception {
-		if(args.length < 3) { System.out.println("Falta(m) parametro(s)!"); return; }
+		if(args.length < 2) { System.out.println("Falta(m) parametro(s)!"); return; }
 		
 		boolean encoder = false;
 		boolean decoder = false;
 		
 		String fileName = args[0];
-		int numReduces = Integer.parseInt(args[1]);
-		switch(args[2]) {
+		switch(args[1]) {
 		case "encoder":
 			encoder = true;
 			break;
@@ -43,7 +42,7 @@ public class Main {
 			} catch(Exception ex) { }
 				
 			startTime = System.nanoTime();
-			new Encoder(fileName, numReduces);
+			new Encoder(fileName);
 			endTime = System.nanoTime();
 			System.out.println("Compressão completa!");
 			
