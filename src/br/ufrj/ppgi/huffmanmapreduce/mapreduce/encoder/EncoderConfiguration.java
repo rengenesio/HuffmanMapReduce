@@ -33,7 +33,6 @@ public class EncoderConfiguration extends Configured implements Tool {
 
 		// Setup MapReduce job
 		job.setMapperClass(EncoderMap.class);
-		//job.setReducerClass(EncoderReduce.class);
 		job.setNumReduceTasks(0);
 		
 		// Input

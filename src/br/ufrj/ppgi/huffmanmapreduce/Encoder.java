@@ -14,11 +14,12 @@ import org.apache.hadoop.util.ToolRunner;
 import br.ufrj.ppgi.huffmanmapreduce.mapreduce.encoder.EncoderConfiguration;
 import br.ufrj.ppgi.huffmanmapreduce.mapreduce.symbolcount.SymbolCountConfiguration;
 
+
 public class Encoder {
-	long[] frequency = new long[Defines.twoPowerBitsCodification];
+	long[] frequencyArray = new long[Defines.twoPowerBitsCodification];
 	short symbols = 0;
 	NodeArray nodeArray;
-	Codification[] codification;
+	Codification[] codificationArray;
 
 	public Encoder(String fileName, int numReduces)
 			throws Exception {
@@ -49,12 +50,12 @@ public class Encoder {
 			FSDataInputStream f = fs.open(status[i].getPath());
 			while(f.available() > 0) {
 				int symbol = f.readInt();
-				frequency[symbol] = f.readLong();
+				frequencyArray[symbol] = f.readLong();
 				symbols++;
 			}
 		}
 		
-		frequency[0] = 1;
+		frequencyArray[0] = 1;
 		symbols++;
 		
 		/*
@@ -74,23 +75,24 @@ public class Encoder {
 		nodeArray = new NodeArray((short) (symbols + 1));
 
 		for (short i = 0; i < Defines.twoPowerBitsCodification; i++)
-			if (frequency[i] > 0)
-				nodeArray.insert(new Node((byte) i, frequency[i]));
+			if (this.frequencyArray[i] > 0)
+				this.nodeArray.insert(new Node((byte) i, this.frequencyArray[i]));
 		
-		///*
+	
+		/*
 		System.out.println(nodeArray.toString());
-		//*/
+		*/
 	}
 
 	public void huffmanEncode() {
 		while (nodeArray.size() > 1) {
 			Node a, b, c;
-			a = nodeArray.get(nodeArray.size() - 2);
-			b = nodeArray.get(nodeArray.size() - 1);
+			a = this.nodeArray.get(this.nodeArray.size() - 2);
+			b = this.nodeArray.get(this.nodeArray.size() - 1);
 			c = new Node((byte) 0, a.frequency + b.frequency, a, b);
 
-			nodeArray.removeLastTwoNodes();
-			nodeArray.insert(c);
+			this.nodeArray.removeLastTwoNodes();
+			this.nodeArray.insert(c);
 			
 			/*
 			System.out.println(nodeArray.toString() + "\n");
@@ -100,11 +102,11 @@ public class Encoder {
 
 	public void treeToCode() {
 		Stack<Node> s = new Stack<Node>();
-		codification = new Codification[symbols];
+		this.codificationArray = new Codification[this.symbols];
 		
-		Node n = nodeArray.get(0);
+		Node n = this.nodeArray.get(0);
 		short codes = 0;
-		byte[] path = new byte[33];
+		byte[] path = new byte[Defines.huffmanTreeMaxPath + 1];
 
 		byte size = 0;
 		s.push(n);
@@ -126,18 +128,18 @@ public class Encoder {
 				}
 			} else {
 				n.visited = true;
-				codification[codes] = new Codification(n.symbol, size, path);
+				codificationArray[codes] = new Codification(n.symbol, size, path);
 				n = s.pop();
 				size--;
 				codes++;
 			}
 		}
 
-		///*
+		/*
 		System.out.println("CODIFICATION: symbol (size) code"); 
 		for(short i = 0 ; i < symbols ; i++)
-			System.out.println(codification[i].toString());
-		//*/
+			System.out.println(codificationArray[i].toString());
+		*/
 	}
 
 	public void codificationToHDFS(String path_out) throws IOException {
@@ -145,7 +147,7 @@ public class Encoder {
 		FileSystem fs = FileSystem.get(new Configuration());
 		FSDataOutputStream f = fs.create(path);
 		
-		f.write(SerializationUtility.serializeCodificationArray(codification));
+		f.write(SerializationUtility.serializeCodificationArray(codificationArray));
 		f.close();
 	}
 }

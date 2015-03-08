@@ -10,7 +10,7 @@ public class BitSet {
 	}
 
 	public void setBit(int pos, boolean s) {
-		pos = Defines.BYTE_BIT - pos - 1;
+		pos = Defines.bitsInByte - pos - 1;
 		if (s)
 			b |= 1 << pos;
 		else
@@ -22,7 +22,7 @@ public class BitSet {
 			System.err.println("Error!");
 			System.exit(-1);
 		}
-		int bit = b & (1 << Defines.BYTE_BIT - pos - 1);
+		int bit = b & (1 << Defines.bitsInByte - pos - 1);
 		if (bit > 0)
 			return true;
 
@@ -35,7 +35,7 @@ public class BitSet {
 
 	public String toString() {
 		String s = new String();
-		for (int i = Defines.BYTE_BIT - 1; i >= 0; i--) {
+		for (int i = Defines.bitsInByte - 1; i >= 0; i--) {
 			int bit = (b & (1 << i)) >> i;
 			s += bit;
 		}

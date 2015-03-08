@@ -6,14 +6,12 @@ public class Defines {
 	
 	//public static final int POWER_BITS_CODIFICATION = 256;
 	
-	public static final int BYTE_BIT = 8;
+	public static final int bitsInByte = 8;
 	
 	
-	public static final int EOB = 3;
-	public static final int EOF = 4;
 	
 	public static final int twoPowerBitsCodification = 256;
-	
+	public static final int huffmanTreeMaxPath = 32;
 	
 	public static final int readBufferSize = 4096;
 	public static final int writeBufferSize = 4096;
