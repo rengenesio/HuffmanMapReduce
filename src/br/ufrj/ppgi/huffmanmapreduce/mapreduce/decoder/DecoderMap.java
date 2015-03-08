@@ -119,6 +119,8 @@ public class DecoderMap extends
 			this.max_code = (this.codificationArray[i].size > this.max_code) ? this.codificationArray[i].size : this.max_code;  
 		}
 		
+		System.out.println("MaxCode: " + max_code);
+		
 		codificationArrayElementSymbol = new byte[(int) Math.pow(2, (max_code + 1))];
 		codificationArrayElementUsed = new boolean[(int) Math.pow(2, (max_code + 1))];
 
