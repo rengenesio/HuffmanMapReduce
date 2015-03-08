@@ -56,6 +56,7 @@ public class DecoderMap extends
 			if (codificationArrayElementUsed[codificationArrayIndex]) {
 				if (codificationArrayElementSymbol[codificationArrayIndex] != 0) {
 					if(bufferOutput.addSymbol(codificationArrayElementSymbol[codificationArrayIndex]) == false) {
+						System.out.println("Escrevendo!!!");
 						context.write(this.key, bufferOutput);
 						bufferOutput.clean();
 						
@@ -120,13 +121,13 @@ public class DecoderMap extends
 			codificationArrayElementUsed[index] = true;
 		}
 
-		///*
+		/*
 		System.out.println("codeToTreeArray():");
 		System.out.println("TREE_ARRAY:"); 
 		for(int i = 0 ; i < Math.pow(2,(max_code + 1)) ; i++) 
 			if(codificationArrayElementUsed[i])
 				System.out.println("i: " + i + " -> " + codificationArrayElementSymbol[i]);
 		System.out.println("------------------------------");
-		//*/
+		*/
 	}
 }
