@@ -25,7 +25,8 @@ public class DecoderConfiguration extends Configured implements Tool {
 		
 		// Configuration to be accessed by map classes
 		conf.set("fileName", fileName);
-
+		conf.set("mapreduce.map.memory.mb", "256");
+		
 		// Create job
 		Job job = Job.getInstance(conf, "HuffmanDecoderMR");
 		job.setJarByClass(DecoderConfiguration.class);
