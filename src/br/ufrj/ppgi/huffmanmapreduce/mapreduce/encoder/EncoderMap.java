@@ -22,7 +22,7 @@ public class EncoderMap extends
 	int inc_key;
 	
 	Codification[] codificationArray = new Codification[Defines.twoPowerBitsCodification];
-	BytesWritableEncoder buffer = new BytesWritableEncoder(Defines.writeBufferSize*100);
+	BytesWritableEncoder buffer = new BytesWritableEncoder(Defines.writeBufferSize*1000);
 
 	@Override
 	protected void setup(
@@ -30,7 +30,7 @@ public class EncoderMap extends
 			throws IOException, InterruptedException {
 		super.setup(context);
 		
-		this.key = new LongWritable(context.getTaskAttemptID().getTaskID().getId());
+		this.key = new LongWritable(context.getTaskAttemptID().getTaskID().getId() * 134217728);
 		this.inc_key = 1;
 		fileToCodification(context.getConfiguration());
 	}
@@ -38,12 +38,10 @@ public class EncoderMap extends
 	public void map(LongWritable key, BytesWritable value, Context context)
 			throws IOException, InterruptedException {
 		int valueLengthInBytes = value.getLength();
-		System.out.println(String.format("Value length: %d", value.getLength()));
 		for (int i = 0 ; i < valueLengthInBytes ; i++) {
 			for (short j = 0; j < this.codificationArray.length; j++) {
 				if (codificationArray[j].symbol == value.getBytes()[i]) {
 					if(buffer.addCode(codificationArray[j]) == false) {
-						//System.out.println(String.format("Não consegui alocar ao ler a chave: %ld", this.key.get()));
 						context.write(this.key, buffer);
 						this.key.set(this.key.get() + this.inc_key);
 						buffer.clean();
@@ -76,7 +74,7 @@ public class EncoderMap extends
 			context.write(this.key, buffer);
 		}
 		
-		super.cleanup(context);
+		super.cleanup(context);	
 	}
 	
 	

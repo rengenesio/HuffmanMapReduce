@@ -43,7 +43,6 @@ public class Defines {
 	public static final String pathSuffix = ".mapreducedir/";
 	public static final String compressedSplitsPath = "compressed/";
 	public static final String symbolCountSplitsPath = "symbolcount/";
-	//public static final String compressedFileName = "part-";
 	public static final String codificationFileName = "codification";
 	public static final String decompressedPath = "decompressed/";
 }

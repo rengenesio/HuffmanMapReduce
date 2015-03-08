@@ -8,32 +8,6 @@ import org.apache.hadoop.fs.Path;
 public class Main {
 
 	public static void main(String[] args) throws Exception {
-//		long t, t1, t2;
-//		
-//		String fileName = args[0];
-//		int numReduces = Integer.parseInt(args[1]);
-//		
-//		Configuration conf = new Configuration();
-//		FileSystem fs = FileSystem.get(conf);
-//
-//		try {
-//			fs.delete(new Path(fileName + Defines.pathSuffix), true);
-//		} 
-//		catch(Exception ex) {
-//		}
-//		
-//		t1 = System.nanoTime();
-//		new Encoder(fileName, numReduces);
-//		t2 = System.nanoTime();
-//		t = t2 - t1;
-//		System.out.println(t/1000000000.0 + " s (encoder)");
-//
-//		t1 = System.nanoTime();
-//		new Decoder(fileName, numReduces);
-//		t2 = System.nanoTime();
-//		t = t2 - t1;
-//		System.out.println(t/1000000000.0 + " s (decoder)");
-		
 		if(args.length < 3) { System.out.println("Falta(m) parametro(s)!"); return; }
 		
 		boolean encoder = false;
