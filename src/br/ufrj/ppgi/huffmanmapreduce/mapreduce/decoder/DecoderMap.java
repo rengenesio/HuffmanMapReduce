@@ -55,6 +55,8 @@ public class DecoderMap extends
 //		System.out.println("Length in bits: " + compressedBytesLengthInBits);
 		
 		for (int i = 0; i < compressedBytesLengthInBits ; i++) {
+			codificationArrayIndex <<= 1;
+			
 			if (BitUtility.checkBit(compressedByteArray, i) == false) {
 				codificationArrayIndex += 1;
 			}
