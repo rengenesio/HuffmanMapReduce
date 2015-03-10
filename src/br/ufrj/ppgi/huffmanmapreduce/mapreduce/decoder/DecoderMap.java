@@ -24,6 +24,9 @@ public class DecoderMap extends
 	Codification[] codificationArray = new Codification[Defines.twoPowerBitsCodification];
 	BytesWritableEncoder bufferOutput = new BytesWritableEncoder(Defines.writeBufferSize*1000);
 	LongWritable key = new LongWritable(0);
+//	
+	boolean keySet = false;
+	
 	
 	byte max_code = 0;
 	HashMap<Integer, Byte> codificationMap = new HashMap<Integer, Byte>();
@@ -45,7 +48,10 @@ public class DecoderMap extends
 		byte[] compressedByteArray = value.getBytes();
 		int compressedBytesLengthInBits = value.getLength() * 8;
 		
-//		System.out.println("Length in bits: " + compressedBytesLengthInBits);
+		if(this.keySet == false) {
+			System.out.println("Key: " + key);
+			keySet = true;
+		}
 		
 		for (int i = 0; i < compressedBytesLengthInBits ; i++) {
 			codificationArrayIndex <<= 1;
