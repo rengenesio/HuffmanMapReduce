@@ -79,6 +79,7 @@ public class DecoderMap extends
 			
 			if(codificationMap.containsKey(codificationArrayIndex)) {
 				byte symbol = codificationMap.get(codificationArrayIndex);
+				System.out.println(String.format("i: %d   index: %d   -> %d", i, codificationArrayIndex, symbol));
 				if(symbol != 0) {
 					if(bufferOutput.addSymbol(symbol)) {
 						context.write(this.key, bufferOutput);
