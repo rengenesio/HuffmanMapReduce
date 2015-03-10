@@ -90,6 +90,8 @@ public class DecoderMap extends
 				else {
 					return;
 				}
+				
+				codificationArrayIndex = 0;
 			}
 		}
 	}
