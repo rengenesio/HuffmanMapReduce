@@ -2,8 +2,11 @@ package br.ufrj.ppgi.huffmanmapreduce.mapreduce.decoder;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
+import javax.xml.crypto.dsig.keyinfo.KeyValue;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
@@ -145,14 +148,17 @@ public class DecoderMap extends
 //			codificationArrayElementSymbol[index] = codificationArray[i].symbol;
 //			codificationArrayElementUsed[index] = true;
 		}
-
-		/*
+		
+		///*
 		System.out.println("codeToTreeArray():");
 		System.out.println("TREE_ARRAY:"); 
-		for(int i = 0 ; i < Math.pow(2,(max_code + 1)) ; i++) 
-			if(codificationArrayElementUsed[i])
-				System.out.println("i: " + i + " -> " + codificationArrayElementSymbol[i]);
+//		for(int i = 0 ; i < Math.pow(2,(max_code + 1)) ; i++) 
+//			if(codificationArrayElementUsed[i])
+//				System.out.println("i: " + i + " -> " + codificationArrayElementSymbol[i]);
+		for(Map.Entry<Integer, Byte> mapEntry : codificationMap.entrySet()) {
+			System.out.println(mapEntry.getKey() + "  ->  " + mapEntry.getValue());			
+		}
 		System.out.println("------------------------------");
-		*/
+		//*/
 	}
 }
