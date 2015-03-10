@@ -1,6 +1,9 @@
 package br.ufrj.ppgi.huffmanmapreduce.mapreduce.decoder;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
@@ -25,8 +28,9 @@ public class DecoderMap extends
 	
 	
 	byte max_code = 0;
-	byte[] codificationArrayElementSymbol;
-	boolean[] codificationArrayElementUsed;
+	//byte[] codificationArrayElementSymbol;
+	//boolean[] codificationArrayElementUsed;
+	HashMap<Integer, Byte> codificationMap = new HashMap<Integer, Byte>();
 	
 	int codificationArrayIndex = 0;
 	
@@ -55,19 +59,33 @@ public class DecoderMap extends
 				codificationArrayIndex += 2;
 			}
 			
-			if (codificationArrayElementUsed[codificationArrayIndex]) {
-				if (codificationArrayElementSymbol[codificationArrayIndex] != 0) {
-					if(bufferOutput.addSymbol(codificationArrayElementSymbol[codificationArrayIndex]) == false) {
+//			if (codificationArrayElementUsed[codificationArrayIndex]) {
+//				if (codificationArrayElementSymbol[codificationArrayIndex] != 0) {
+//					if(bufferOutput.addSymbol(codificationArrayElementSymbol[codificationArrayIndex]) == false) {
+//						context.write(this.key, bufferOutput);
+//						bufferOutput.clean();
+//						bufferOutput.addSymbol(codificationArrayElementSymbol[codificationArrayIndex]);
+//					}
+//				}
+//				else {
+//					return;
+//				}
+//				
+//				codificationArrayIndex = 0;
+//			}
+			
+			if(codificationMap.containsKey(codificationArrayIndex)) {
+				byte symbol = codificationMap.get(codificationArrayIndex);
+				if(symbol != 0) {
+					if(bufferOutput.addSymbol(symbol)) {
 						context.write(this.key, bufferOutput);
 						bufferOutput.clean();
-						bufferOutput.addSymbol(codificationArrayElementSymbol[codificationArrayIndex]);
+						bufferOutput.addSymbol(symbol);
 					}
 				}
 				else {
 					return;
 				}
-				
-				codificationArrayIndex = 0;
 			}
 		}
 	}
@@ -106,8 +124,11 @@ public class DecoderMap extends
 			this.max_code = (this.codificationArray[i].size > this.max_code) ? this.codificationArray[i].size : this.max_code;  
 		}
 		
-		codificationArrayElementSymbol = new byte[(int) Math.pow(2, (max_code + 1))];
-		codificationArrayElementUsed = new boolean[(int) Math.pow(2, (max_code + 1))];
+		
+		
+	
+		//codificationArrayElementSymbol = new byte[(int) Math.pow(2, (max_code + 1))];
+		//codificationArrayElementUsed = new boolean[(int) Math.pow(2, (max_code + 1))];
 
 		for (short i = 0; i < this.codificationArray.length; i++) {
 			int index = 0;
@@ -118,8 +139,11 @@ public class DecoderMap extends
 				else
 					index += 2;
 			}
-			codificationArrayElementSymbol[index] = codificationArray[i].symbol;
-			codificationArrayElementUsed[index] = true;
+			
+			codificationMap.put(index, codificationArray[i].symbol);
+			
+//			codificationArrayElementSymbol[index] = codificationArray[i].symbol;
+//			codificationArrayElementUsed[index] = true;
 		}
 
 		/*
