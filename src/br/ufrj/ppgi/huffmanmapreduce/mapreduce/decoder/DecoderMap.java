@@ -3,10 +3,6 @@ package br.ufrj.ppgi.huffmanmapreduce.mapreduce.decoder;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
-import javax.xml.crypto.dsig.keyinfo.KeyValue;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
@@ -29,10 +25,7 @@ public class DecoderMap extends
 	BytesWritableEncoder bufferOutput = new BytesWritableEncoder(Defines.writeBufferSize*1000);
 	LongWritable key = new LongWritable(0);
 	
-	
 	byte max_code = 0;
-	//byte[] codificationArrayElementSymbol;
-	//boolean[] codificationArrayElementUsed;
 	HashMap<Integer, Byte> codificationMap = new HashMap<Integer, Byte>();
 	
 	int codificationArrayIndex = 0;
@@ -64,26 +57,11 @@ public class DecoderMap extends
 				codificationArrayIndex += 2;
 			}
 			
-//			if (codificationArrayElementUsed[codificationArrayIndex]) {
-//				if (codificationArrayElementSymbol[codificationArrayIndex] != 0) {
-//					if(bufferOutput.addSymbol(codificationArrayElementSymbol[codificationArrayIndex]) == false) {
-//						context.write(this.key, bufferOutput);
-//						bufferOutput.clean();
-//						bufferOutput.addSymbol(codificationArrayElementSymbol[codificationArrayIndex]);
-//					}
-//				}
-//				else {
-//					return;
-//				}
-//				
-//				codificationArrayIndex = 0;
-//			}
-			
 			if(codificationMap.containsKey(codificationArrayIndex)) {
 				byte symbol = codificationMap.get(codificationArrayIndex);
-				System.out.println(String.format("i: %d   index: %d   -> %d", i, codificationArrayIndex, symbol));
+//				System.out.println(String.format("i: %d   index: %d   -> %d", i, codificationArrayIndex, symbol));
 				if(symbol != 0) {
-					if(bufferOutput.addSymbol(symbol)) {
+					if(bufferOutput.addSymbol(symbol) == false) {
 						context.write(this.key, bufferOutput);
 						bufferOutput.clean();
 						bufferOutput.addSymbol(symbol);
